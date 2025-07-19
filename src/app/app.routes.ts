@@ -14,5 +14,17 @@ export const routes: Routes = [
     path: 'new-category',
     loadComponent: () => import('./pages/new-category/new-category.page').then( m => m.NewCategoryPage)
   },
+  {
+    path: 'formescalar-a-vendedor',
+    loadComponent: () => import('./formescalar-a-vendedor/formescalar-a-vendedor.page').then( m => m.FormescalarAVendedorPage)
+  },
+  {
+    path: 'form-escalar-avendedor',
+    loadComponent: () => import('./pages/form-escalar-avendedor/form-escalar-avendedor.page').then( m => m.FormEscalarAVendedorPage)
+  },
+  {
+    path: 'become-rentador',
+    loadComponent: () => import('./pages/become-rentador/become-rentador.page').then( m => m.BecomeRentadorPage)
+  },
   
 ];
