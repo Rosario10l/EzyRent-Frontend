@@ -19,15 +19,19 @@
           <img [src]="product.images[0] || 'assets/default-product.png'">
         </ion-thumbnail>
         <ion-label>
-          <h2>{{ product.name }}</h2>
+          <h2>{{ product.nomnre }}</h2>
           <p>{{ product.description | slice:0:50 }}...</p>
           <p>
-            <ion-text color="primary">{{ product.price | currency }}</ion-text>
+            <ion-text color="primary">{{ product.precio | currency }}</ion-text>
             <ion-text> / {{ product.rentalPeriod }} días</ion-text>
           </p>
-          <ion-text [color]="product.available ? 'success' : 'danger'">
-            {{ product.available ? 'Disponible' : 'No disponible' }}
-          </ion-text>
+          <ion-badge [color]="articulo.cantidad_disponible > 0 ? 'success' : 'danger'">
+            {{ articulo.cantidad_disponible > 0 ? 'success' : 'danger'}}
+          </ion-badge>
+          <ion-button expan="block" [disabled]="articulo.cantidad_disponible === 0" color="primary">
+          <ion-icon name="cart-outline" slot="start"></ion-icon>
+            Agregar al carrito
+        </ion-button>
         </ion-label>
       </ion-item>
 

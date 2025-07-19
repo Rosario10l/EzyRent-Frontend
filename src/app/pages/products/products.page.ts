@@ -3,7 +3,8 @@ import { ProductService } from '../services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { Product } from '../models/product.model';
-
+import { LoadingController, ToastController } from '@ionic/angular
+'
 @Component({
   selector: 'app-products',
   templateUrl: './products.page.html',
@@ -18,8 +19,11 @@ export class ProductsPage implements OnInit {
   constructor(
     private productService: ProductService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {}
+
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();

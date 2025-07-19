@@ -3,9 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product.model';
 
+export interface product{
+  id?: number;
+  nombre: string;
+  description: string;
+  precio: number;
+  cantidad_total: number;
+  catidad_disponible: number;
+  imagen_url: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class ProductService {
   private apiUrl = 'http://tu-backend-api.com/api/products';
 
