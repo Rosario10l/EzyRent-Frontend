@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { ModalController, IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonSpinner, IonIcon } from '@ionic/angular/standalone';
-import { Router, RouterLink } from '@angular/router';
-import { ToastController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
-  standalone: true,
+  selector: 'app-register-modal',
+  templateUrl: './register-modal.component.html',
+  styleUrls: ['./register-modal.component.scss'],
   imports: [IonIcon, IonContent, CommonModule, FormsModule, HttpClientModule, IonIcon, IonSpinner, RouterLink]
+  ,
+  standalone: true,
 })
-export class RegisterPage {
+export class RegisterModalComponent  implements OnInit {
   isDarkMode = false;
   nombre = '';
   email = '';
@@ -22,12 +23,12 @@ export class RegisterPage {
   loading = false;
   showPassword = false;
   constructor(
+    private authService: AuthService,
     private router: Router,
-    private toast: ToastController,
-    private authService: AuthService
+    private modalCtrl: ModalController,
+    private toast: ToastController
   ) { }
-
-  togglePassword() {
+ togglePassword() {
     this.showPassword = !this.showPassword;
   }
   togglePasswordVisibility(field: string) {
@@ -87,6 +88,9 @@ export class RegisterPage {
       color: 'dark',
     });
     await toast.present();
+  }
+    closeModal() {
+    this.modalCtrl.dismiss();
   }
 
 }

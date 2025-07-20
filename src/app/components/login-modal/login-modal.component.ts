@@ -1,36 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { ModalController, IonIcon, IonSpinner, IonContent } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
-import 'animate.css';
-
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-login-modal',
+  templateUrl: './login-modal.component.html',
+  styleUrls: ['./login-modal.component.scss'],
   standalone: true,
-  imports: [IonContent, CommonModule, FormsModule, IonContent, HttpClientModule, IonIcon, IonSpinner, RouterLink],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, RouterLink],
 })
-export class LoginPage {
+export class LoginModalComponent {
   email = '';
   password = '';
   loading = false;
   showPassword = false;
-  isDarkMode = false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
+    private modalCtrl: ModalController,
     private toast: ToastController
   ) { }
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
-  }
   togglePasswordVisibility(field: string) {
     this.showPassword = !this.showPassword;
     const input = document.querySelector(`[name="${field}"]`) as HTMLInputElement;
@@ -39,16 +34,6 @@ export class LoginPage {
     }
   }
 
-  ngOnInit() {
-    this.checkDarkMode();
-    // Escuchar cambios en la preferencia de color
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      this.checkDarkMode();
-    });
-  }
-  checkDarkMode() {
-    this.isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
   async onLogin() {
 
     this.loading = true;
@@ -64,6 +49,9 @@ export class LoginPage {
         await this.showToast('Error al iniciar sesión. Verifica tus credenciales.');
       }
     });
+  }
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
 
   private async showToast(message: string) {

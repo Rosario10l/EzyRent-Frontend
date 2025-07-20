@@ -11,12 +11,16 @@ export class AuthService {
   private isAuthenticated = new BehaviorSubject<boolean>(false);
 
 
-  constructor(private http: HttpClient, private router : Router) {}
+  constructor(private http: HttpClient, private router : Router) {
+    const token = localStorage.getItem('token');
+    this.isAuthenticated.next(!!token);
+  }
   login(credentials: { email: string; password: string }) {
-    return this.http.post(`${this.apiUrl}/auth/login`, credentials).pipe(
+     console.log('URL:', `${this.apiUrl}usuario/login`);
+    return this.http.post(`${this.apiUrl}usuario/login`, credentials).pipe(
       tap((response: any) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
+        if (response.access_token) {
+          localStorage.setItem('token', response.access_token);
           this.isAuthenticated.next(true);
         }
       })
@@ -24,7 +28,7 @@ export class AuthService {
   }
 
   register(userData: any) {
-    return this.http.post(`${this.apiUrl}/usuario`, userData).pipe(
+    return this.http.post(`${this.apiUrl}usuario/register`, userData).pipe(
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem('token', response.token);

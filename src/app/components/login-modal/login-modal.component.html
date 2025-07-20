@@ -1,14 +1,8 @@
 <ion-content class="ion-padding bg-gray-50">
-  <div class="max-w-md mx-auto">
-    <!-- Logo y título -->
-    <div class="text-center mb-8  animate__animated animate__fadeInDown">
-      <div class="text-5xl text-airbnb mb-4">
-        <ion-icon name="ion-spinner"></ion-icon>
-      </div>
-      <h1 class="text-2xl font-bold text-gray-800">Iniciar Sesion</h1>
-      <p class="text-gray-600 mt-2">Comienza a rentar</p>
-    </div>
-
+  <div class="max-w-md mx-auto relative">
+    <button class="absolute top-0 right-0 m-4 text-gray-500 text-xl" (click)="closeModal()">
+      <ion-icon name="close"></ion-icon>
+    </button>
     <!-- Formulario -->
     <form (submit)="onLogin()" class="animate__animated animate__fadeInUp">
       <!-- Correo electrónico -->
@@ -45,11 +39,12 @@
       <button type="submit"
         class="w-full bg-gradient-to-r from-airbnb to-airbnb-light text-white font-semibold py-3 rounded-lg mb-6 shadow-md transform transition duration-300 hover:scale-105"
         [disabled]="loading">
-        <span *ngIf="!loading" class="flex items-center justify-center">     Iniciar sesión
+        <span *ngIf="!loading" class="flex items-center justify-center"> Iniciar sesión
           <ion-icon name="arrow-forward" class="ml-2 transition-all duration-300 group-hover:translate-x-1"></ion-icon>
         </span>
         <ion-spinner *ngIf="loading" name="crescent" class="mx-auto"></ion-spinner>
       </button>
+
 
       <!-- Términos y condiciones -->
       <div class="text-center text-gray-500 text-xs mb-6">
@@ -78,12 +73,6 @@
           <ion-icon name="logo-facebook" class="text-blue-600 mr-2"></ion-icon>
           <span>Facebook</span>
         </button>
-      </div>
-
-      <!-- Enlace a inicio de sesión -->
-      <div class="text-center">
-        <span class="text-gray-600">¿No tienes una cuenta?</span>
-        <a [routerLink]="['/register']" class="text-airbnb font-medium ml-1">Registrate</a>
       </div>
     </form>
   </div>
