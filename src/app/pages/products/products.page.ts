@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../services/product.service';
+import { ProductService } from '../products/services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-import { Product } from '../models/product.model';
-import { LoadingController, ToastController } from '@ionic/angular
-'
+import { Product } from '../products/models/product.model';
+import { LoadingController, ToastController } from '@ionic/angular'
+
 @Component({
   selector: 'app-products',
   templateUrl: './products.page.html',

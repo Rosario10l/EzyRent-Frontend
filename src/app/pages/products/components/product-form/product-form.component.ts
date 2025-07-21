@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-product-form',
@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class ProductFormComponent implements OnInit {
   productForm: FormGroup;
   isEditMode = false;
-  productId: string;
+  productId: string | null = null;
   images: File[] = [];
   previewImages: string[] = [];
 
@@ -22,7 +22,9 @@ export class ProductFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -49,10 +51,17 @@ export class ProductFormComponent implements OnInit {
   }
 
   loadProductData() {
-    this.productService.getProduct(this.productId).subscribe(product => {
-      this.productForm.patchValue(product);
-      this.previewImages = [...product.images];
-    });
+    if(this.productId){
+      this.productService.getProducts(this.productId).subscribe(
+        product=>{
+          this.productForm.patchValue(product);
+        },
+        error=>{
+          console.error('Error al cargar productos', error)
+          this.presentToast('error al cargar los datos del producto')
+        }
+      );
+    }
   }
 
   onImageChange(event: Event) {
@@ -75,34 +84,89 @@ export class ProductFormComponent implements OnInit {
     this.images.splice(index, 1);
   }
 
-  onSubmit() {
-    if (this.productForm.valid) {
-      const formData = new FormData();
-      const productData = this.productForm.value;
-      const currentUser = this.authService.getCurrentUser();
+ async onSubmit() {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched(); 
+      await this.presentToast('Por favor, completa todos los campos requeridos', 'warning');
+      return;
+    }
 
-      Object.keys(productData).forEach(key => {
-        formData.append(key, productData[key]);
-      });
+    const loading = await this.loadingController.create({
+      message: 'Guardando...',
+      spinner: 'crescent'
+    });
+    await loading.present();
 
-      this.images.forEach(file => {
-        formData.append('images', file);
-      });
+    const formData = new FormData();
+    const productData = this.productForm.value;
+    const currentUser = this.authService.getCurrentUser();
 
-      formData.append('ownerId', currentUser.id);
-      formData.append('ownerName', currentUser.name);
+    if (!currentUser || !currentUser.id || !currentUser.name) {
+        await loading.dismiss();
+        await this.presentToast('Error: Usuario no autenticado o incompleto.', 'danger');
+        this.router.navigate(['/login']); 
+        return;
+    }
 
+
+    Object.keys(productData).forEach(key => {
+      formData.append(key, productData[key]);
+    });
+
+    this.images.forEach(file => {
+      formData.append('images', file);
+    });
+
+    formData.append('ownerId', currentUser.id);
+    formData.append('ownerName', currentUser.name);
+
+    try {
       if (this.isEditMode) {
+        if (!this.productId) {
+            await loading.dismiss();
+            await this.presentToast('Error: ID de producto no definido para edición.', 'danger');
+            return;
+        }
         this.productService.updateProduct(this.productId, formData).subscribe(
-          () => this.router.navigate(['/products']),
-          error => console.error('Error updating product:', error)
+          async () => {
+            await loading.dismiss();
+            await this.presentToast('Producto actualizado exitosamente', 'success');
+            this.router.navigate(['/products']);
+          },
+          async error => {
+            await loading.dismiss();
+            await this.presentToast('Error al actualizar producto', 'danger');
+            console.error('Error updating product:', error);
+          }
         );
       } else {
         this.productService.createProduct(formData).subscribe(
-          () => this.router.navigate(['/products']),
-          error => console.error('Error creating product:', error)
+          async () => {
+            await loading.dismiss();
+            await this.presentToast('Producto creado exitosamente', 'success');
+            this.router.navigate(['/products']);
+          },
+          async error => {
+            await loading.dismiss();
+            await this.presentToast('Error al crear producto', 'danger');
+            console.error('Error creating product:', error);
+          }
         );
       }
+    } catch (error) {
+      await loading.dismiss();
+      await this.presentToast('Ocurrió un error inesperado', 'danger');
+      console.error('Unexpected error:', error);
     }
+  }
+
+  async presentToast(message: string, color: string = 'primary', duration: number = 2000) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: duration,
+      color: color,
+      position: 'bottom'
+    });
+    toast.present();
   }
 }

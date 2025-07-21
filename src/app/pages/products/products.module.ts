@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
     IonicModule,
     ProductsPageRoutingModule,
     ReactiveFormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   declarations: [
