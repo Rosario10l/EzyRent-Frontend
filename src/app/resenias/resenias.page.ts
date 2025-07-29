@@ -1,17 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, importProvidersFrom } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar
-} from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { CalificacionService } from '../services/calificacion.service';
 
 @Component({
   selector: 'app-resenias',
@@ -19,33 +10,60 @@ import {
   styleUrls: ['./resenias.page.scss'],
   standalone: true,
   imports: [
-
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
-  ]
+  ],
 })
 export class ReseniasPage {
-  resenaForm = this.fb.group({
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
-    calificacion: ['', Validators.required],
-    comentario: ['', [Validators.required, Validators.minLength(5)]]
-  });
+  calificaciones: any[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  nuevaCalificacion = {
+    rentador_id: null,
+    usuario_id: null,
+    renta_id: null,
+    Calificacion: null,
+    comentario: '',
+  };
 
-  enviarResena() {
-    if (this.resenaForm.valid) {
-      const datosResena = this.resenaForm.value;
-      console.log('✅ Reseña enviada:', datosResena);
+  constructor(private calificacionService: CalificacionService) {}
 
-      // Aquí podrías llamar a un servicio HTTP
-      // this.resenaService.enviarResena(datosResena).subscribe(...);
+  ionViewWillEnter() {
+    this.calificacionService.getAll().subscribe(data => {
+      this.calificaciones = data;
+    });
+  }
 
-      this.resenaForm.reset();
-    } else {
-      console.warn('❌ Formulario inválido');
-      this.resenaForm.markAllAsTouched();
+  agregarCalificacion() {
+    if (
+      !this.nuevaCalificacion.rentador_id ||
+      !this.nuevaCalificacion.usuario_id ||
+      !this.nuevaCalificacion.renta_id ||
+      !this.nuevaCalificacion.Calificacion
+    ) {
+      alert('Por favor llena todos los campos requeridos.');
+      return;
     }
+
+    this.calificacionService.create(this.nuevaCalificacion).subscribe(res => {
+      console.log('Calificación creada', res);
+      this.limpiarFormulario();
+      this.ionViewWillEnter(); // recargar lista
+    });
+  }
+
+  eliminarCalificacion(id: number) {
+    this.calificacionService.delete(id).subscribe(() => {
+      this.ionViewWillEnter(); // recargar lista
+    });
+  }
+
+  limpiarFormulario() {
+    this.nuevaCalificacion = {
+      rentador_id: null,
+      usuario_id: null,
+      renta_id: null,
+      Calificacion: null,
+      comentario: '',
+    };
   }
 }

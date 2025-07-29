@@ -7,9 +7,10 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'resenias',
     pathMatch: 'full',
-  },  {
+  },
+  {
     path: 'resenias',
     loadComponent: () => import('./resenias/resenias.page').then( m => m.ReseniasPage)
   },
