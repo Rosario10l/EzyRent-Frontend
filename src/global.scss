@@ -17,6 +17,7 @@
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
+@import 'animate.css';
 
 /* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
@@ -40,3 +41,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.custom-modal {
+  --width: 100%;
+  --height: auto;
+  --max-width: 480px;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
