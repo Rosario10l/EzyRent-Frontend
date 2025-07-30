@@ -4,12 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { IonicModule, LoadingController, ToastController } from '@ionic/angular';
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss'],
-  imports:[IonicModule,ReactiveFormsModule]
+  imports:[IonicModule,ReactiveFormsModule, CommonModule]
 })
 export class ProductFormComponent implements OnInit {
   productForm!: FormGroup;

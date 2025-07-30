@@ -19,7 +19,7 @@
           <img [src]="product.images[0] || 'assets/default-product.png'">
         </ion-thumbnail>
         <ion-label>
-          <h2>{{ product.nomnre }}</h2>
+          <h2>{{ product.name }}</h2>
           <p>{{ product.description | slice:0:50 }}...</p>
           <p>
             <ion-text color="primary">{{ product.precio | currency }}</ion-text>
