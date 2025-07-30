@@ -47,5 +47,8 @@ export class AuthService {
   getAuthStatus() {
     return this.isAuthenticated.asObservable();
   }
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
 
 }
