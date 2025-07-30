@@ -1,27 +1,22 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { ProductsPage } from './products.page';
 import { ProductsPageRoutingModule } from './products-routing.module';
-import { ProductListComponent } from './components/product-list/product-list.component';
-import { ProductFormComponent } from './components/product-form/product-form.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AppComponent } from 'src/app/app.component';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   imports: [
-    CommonModule,
     FormsModule,
-    IonicModule,
+    IonicModule.forRoot(),
     ProductsPageRoutingModule,
     ReactiveFormsModule,
-    ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserModule,
+  
   ],
   declarations: [
-    ProductsPage,
-    ProductListComponent,
-    ProductFormComponent
   ]
 })
 export class ProductsPageModule {}

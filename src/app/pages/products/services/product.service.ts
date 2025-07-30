@@ -18,13 +18,17 @@ export interface product{
 })
 
 export class ProductService {
-  private apiUrl = 'http://tu-backend-api.com/api/products';
+  private apiUrl = 'http://localhost:3800';
 
   constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
   }
+
+  getProductById(id: string): Observable<Product> {
+  return this.http.get<Product>(`${this.apiUrl}/${id}`);
+}
 
   getProductsByOwner(ownerId: string): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.apiUrl}/owner/${ownerId}`);

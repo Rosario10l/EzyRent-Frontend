@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { IonicModule, LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss'],
+  imports:[IonicModule,ReactiveFormsModule]
 })
 export class ProductFormComponent implements OnInit {
-  productForm: FormGroup;
+  productForm!: FormGroup;
   isEditMode = false;
   productId: string | null = null;
   images: File[] = [];
@@ -52,7 +53,7 @@ export class ProductFormComponent implements OnInit {
 
   loadProductData() {
     if(this.productId){
-      this.productService.getProducts(this.productId).subscribe(
+      this.productService.getProductById(this.productId).subscribe(
         product=>{
           this.productForm.patchValue(product);
         },
