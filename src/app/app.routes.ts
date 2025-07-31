@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guard/auth.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -18,9 +20,4 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./pages/register/register.page').then((m) => m.RegisterPage),
   },
-  {
-    path: 'product',
-    loadComponent: () =>
-      import('./pages/products/components/product-list/product-list.component').then(m => m.ProductListComponent),
-  }
 ];
