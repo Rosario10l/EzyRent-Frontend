@@ -1,3 +1,22 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu content-id="main-content" side="start" type="overlay">
+    <ion-content>
+      <ion-list>
+        @for (item of menuItems; track item) {
+          @if (shouldShow(item)) {
+            <ion-item
+              [routerLink]="item.url"
+              (click)="handleItemClick(item)"
+            >
+              <ion-label>{{ item.title }}</ion-label>
+            </ion-item>
+          }
+        }
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <div class="ion-page" id="main-content">
+    <ion-router-outlet></ion-router-outlet>
+  </div>
 </ion-app>
