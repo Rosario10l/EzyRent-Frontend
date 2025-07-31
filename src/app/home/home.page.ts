@@ -99,5 +99,9 @@ toggleFavorite(producto: Articulo, event: Event) {
   console.log('Se hizo clic en el corazón para:', producto.nombre);
 }
 
+agregarProducto() {
+  this.router.navigate(['/productos/nuevo']); // ajusta según tus rutas
+}
+
 }
 
