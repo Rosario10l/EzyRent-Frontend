@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
+import { NewProductComponent } from './new-product/new-product.component';
 
 export const routes: Routes = [
   {
@@ -20,4 +21,6 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./pages/register/register.page').then((m) => m.RegisterPage),
   },
+   { path: 'nuevo-producto', component: NewProductComponent },
+
 ];
