@@ -1,12 +1,24 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  standalone: true,
+  imports: [CommonModule, CurrencyPipe], // <- esto es lo importante
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
-export class HomePage {
-  constructor() {}
+export class HomeComponent {
+  productos = [
+    { nombre: 'Tenis Adidas Classic', precio: 999, imagen: 'assets/adidas1.jpg' },
+    { nombre: 'Tenis Nike Air', precio: 1200, imagen: 'assets/nike1.jpg' },
+    { nombre: 'Fila Running', precio: 890, imagen: 'assets/fila1.jpg' },
+  ];
+
+  constructor(private router: Router) {}
+
+  verCategoria(nombre: string) {
+    this.router.navigate(['/productos'], { queryParams: { categoria: nombre } });
+  }
 }

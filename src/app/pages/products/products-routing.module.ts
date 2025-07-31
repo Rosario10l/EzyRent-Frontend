@@ -19,10 +19,7 @@ const routes: Routes = [
     component: ProductFormComponent,
     canActivate: [LandlordGuard]
   },
-  {
-    path: ':id',
-    loadChildren: () => import('./product-details/product-details.module').then(m => m.ProductDetailsPageModule)
-  }
+
 ];
 
 @NgModule({

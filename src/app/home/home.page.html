@@ -1,20 +1,26 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+<div class="home-container p-4">
+  <!-- Header -->
+  <div class="header flex items-center justify-between mb-4">
+    <h2 class="text-xl font-semibold">Hola, Oscar 👋</h2>
+    <button class="text-gray-500">
+      <i class="fas fa-bars"></i>
+    </button>
   </div>
-</ion-content>
+
+  <!-- Categorías (Adidas, Nike, Fila, etc.) -->
+  <div class="categorias flex gap-3 overflow-x-auto mb-4">
+    <button class="px-4 py-2 bg-gray-200 rounded-full" (click)="verCategoria('adidas')">Adidas</button>
+    <button class="px-4 py-2 bg-gray-200 rounded-full" (click)="verCategoria('nike')">Nike</button>
+    <button class="px-4 py-2 bg-gray-200 rounded-full" (click)="verCategoria('fila')">Fila</button>
+    <!-- puedes añadir más marcas -->
+  </div>
+
+  <!-- Lista de productos -->
+  <div class="productos grid grid-cols-2 gap-4">
+    <div class="producto border rounded-lg p-2" *ngFor="let producto of productos">
+      <img [src]="producto.imagen" class="w-full h-32 object-cover rounded" />
+      <h3 class="font-semibold mt-2">{{ producto.nombre }}</h3>
+      <p class="text-sm text-gray-600">{{ producto.precio | currency }}</p>
+    </div>
+  </div>
+</div>
