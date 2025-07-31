@@ -1,25 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../services/product.service';
+import { ProductService } from '../products/services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { Router } from '@angular/router';
-import { Product } from '../models/product.model';
+import { Router, RouterLink } from '@angular/router';
+import { Product } from '../products/models/product.model';
+import { IonicModule, LoadingController, ToastController } from '@ionic/angular'
+import { CurrencyPipe, SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.page.html',
   styleUrls: ['./products.page.scss'],
+  imports:[IonicModule, RouterLink, SlicePipe, CurrencyPipe]
 })
 export class ProductsPage implements OnInit {
   products: Product[] = [];
   currentUser: any;
   isAdmin = false;
   isLandlord = false;
+  articulo: any;
 
   constructor(
     private productService: ProductService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {}
+
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
