@@ -1,26 +1,50 @@
-<div class="home-container p-4">
-  <!-- Header -->
-  <div class="header flex items-center justify-between mb-4">
-    <h2 class="text-xl font-semibold">Hola, Oscar 👋</h2>
-    <button class="text-gray-500">
-      <i class="fas fa-bars"></i>
-    </button>
-  </div>
+<ion-content class="bg-gray-100 ion-padding">
+  <div class="home-container">
+    <!-- Grid de productos -->
+    <div class="grid grid-cols-2 gap-4">
+      <div 
+        *ngFor="let producto of productsFiltrados"
+        class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
+        (click)="verDetalleProducto(producto)">
+        
+        <!-- Imagen del producto -->
+        <div class="relative">
+          <img 
+            [src]="producto.imagen_url || 'assets/images/no-image.png'" 
+            [alt]="producto.nombre"
+            class="w-full h-40 object-cover"
+            (error)="onImageError($event)" />
+          
+          <!-- Icono de favorito -->
+          <ion-icon 
+            name="heart-outline" 
+            class="absolute top-3 right-3 text-2xl text-gray-400 bg-white rounded-full p-1 shadow-sm"
+            (click)="toggleFavorite(producto, $event)">
+          </ion-icon>
+        </div>
 
-  <!-- Categorías (Adidas, Nike, Fila, etc.) -->
-  <div class="categorias flex gap-3 overflow-x-auto mb-4">
-    <button class="px-4 py-2 bg-gray-200 rounded-full" (click)="verCategoria('adidas')">Adidas</button>
-    <button class="px-4 py-2 bg-gray-200 rounded-full" (click)="verCategoria('nike')">Nike</button>
-    <button class="px-4 py-2 bg-gray-200 rounded-full" (click)="verCategoria('fila')">Fila</button>
-    <!-- puedes añadir más marcas -->
-  </div>
+        <!-- Información del producto -->
+        <div class="p-3">
+          <h3 class="font-medium text-sm truncate mb-1">{{ producto.nombre }}</h3>
 
-  <!-- Lista de productos -->
-  <div class="productos grid grid-cols-2 gap-4">
-    <div class="producto border rounded-lg p-2" *ngFor="let producto of productos">
-      <img [src]="producto.imagen" class="w-full h-32 object-cover rounded" />
-      <h3 class="font-semibold mt-2">{{ producto.nombre }}</h3>
-      <p class="text-sm text-gray-600">{{ producto.precio | currency }}</p>
+          <div class="text-base font-bold text-black">
+            {{ getPrecioFormateado(producto.precio) }}
+          </div>
+
+          <div 
+            class="text-xs mt-1 px-2 py-0.5 rounded-full font-medium w-fit"
+            [ngClass]="{
+              'bg-green-100 text-green-700': producto.cantidad_disponible > 0,
+              'bg-red-100 text-red-700': producto.cantidad_disponible <= 0
+            }">
+            {{ producto.cantidad_disponible > 0 ? 'Disponible' : 'Agotado' }}
+          </div>
+
+          <div class="text-[11px] text-gray-500 mt-1">
+            Cantidad: {{ producto.cantidad_disponible }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</ion-content>
