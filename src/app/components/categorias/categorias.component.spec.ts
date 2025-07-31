@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { RegisterModalComponent } from './register-modal.component';
+import { CategoriasComponent } from './categorias.component';
 
-describe('RegisterModalComponent', () => {
-  let component: RegisterModalComponent;
-  let fixture: ComponentFixture<RegisterModalComponent>;
+describe('CategoriasComponent', () => {
+  let component: CategoriasComponent;
+  let fixture: ComponentFixture<CategoriasComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RegisterModalComponent],
+      imports: [CategoriasComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RegisterModalComponent);
+    fixture = TestBed.createComponent(CategoriasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
