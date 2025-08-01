@@ -7,8 +7,7 @@ import { ProductService, Articulo } from '../services/products.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule],
-  imports: [CommonModule, CurrencyPipe], 
+  imports: [CommonModule, IonicModule, RouterModule, CurrencyPipe], 
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
@@ -37,14 +36,27 @@ export class HomePage{
       this.isLoading = true;
       this.error = null;
       
+      interface GetArticulosResponse {
+        activo: boolean;
+        categoria?: { nombre: string };
+        id: number;
+        nombre: string;
+        // agrega otros campos según la definición de Articulo
+      }
+
+      interface GetArticulosError {
+        message?: string;
+        // agrega otros campos de error si es necesario
+      }
+
       this.productservice.getArticulos().subscribe({
-        next: (products) => {
-          this.products = products.filter(p => p.activo);
+        next: (products: GetArticulosResponse[]) => {
+          this.products = products.filter((p: GetArticulosResponse) => p.activo);
           this.productsFiltrados = this.products;
           this.extraerCategorias();
           this.isLoading = false;
         },
-        error: (error) => {
+        error: (error: GetArticulosError) => {
           console.error('Error al cargar productos:', error);
           this.error = 'Error al cargar los productos. Intenta de nuevo.';
           this.isLoading = false;
