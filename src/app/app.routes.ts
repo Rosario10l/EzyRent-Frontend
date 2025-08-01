@@ -13,6 +13,10 @@ export const routes: Routes = [
   path: 'productos',
   loadComponent: () => import('./components/productos/productos.component').then(m => m.ProductosComponent)
   },
+    {
+  path: 'new-product',
+  loadComponent: () => import('./new-product/new-product.component').then(m => m.NewProductComponent)
+  },
   {
     path: '',
     redirectTo: 'home',

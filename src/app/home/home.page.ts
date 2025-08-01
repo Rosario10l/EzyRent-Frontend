@@ -21,12 +21,12 @@ export class HomePage{
   productsFiltrados: Articulo[] = [];
   categoria: string[] = [];
   isLoading = true;
-  
+
   error: string | null = null;
 
   constructor(private router: Router,
   private productservice: ProductService) {}
-  
+
  ngOnInit() {
     this.cargarProductos();
   }
@@ -35,7 +35,7 @@ export class HomePage{
     try {
       this.isLoading = true;
       this.error = null;
-      
+
       this.productservice.getArticulos().subscribe({
         next: (products) => {
           this.products = products.filter(p => p.activo);
@@ -100,7 +100,7 @@ toggleFavorite(producto: Articulo, event: Event) {
 }
 
 agregarProducto() {
-  this.router.navigate(['/productos/nuevo']); // ajusta según tus rutas
+  this.router.navigate(['/new-product']); 
 }
 
 }
