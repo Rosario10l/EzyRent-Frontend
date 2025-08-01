@@ -1,0 +1,67 @@
+<!-- calificaciones.page.html -->
+<div class="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md mt-6">
+  <h1 class="text-2xl font-bold mb-4 text-center">Calificaciones</h1>
+
+  <!-- Formulario simple para crear calificación -->
+  <form (ngSubmit)="agregarCalificacion()" class="space-y-4">
+    <div>
+      <label class="block font-semibold mb-1">Rentador ID</label>
+      <input
+        type="number"
+        [(ngModel)]="nuevaCalificacion.rentador_id"
+        name="rentador_id"
+        required
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+    <div>
+      <label class="block font-semibold mb-1">Usuario ID</label>
+      <input
+        type="number"
+        [(ngModel)]="nuevaCalificacion.usuario_id"
+        name="usuario_id"
+        required
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+    <div>
+      <label class="block font-semibold mb-1">Renta ID</label>
+      <input
+        type="number"
+        [(ngModel)]="nuevaCalificacion.renta_id"
+        name="renta_id"
+        required
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+    <div>
+      <label class="block font-semibold mb-1">Calificación (1-5)</label>
+      <input
+        type="number"
+        [(ngModel)]="nuevaCalificacion.Calificacion"
+        name="Calificacion"
+        min="1"
+        max="5"
+        required
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+    <div>
+      <label class="block font-semibold mb-1">Comentario</label>
+      <textarea
+        [(ngModel)]="nuevaCalificacion.comentario"
+        name="comentario"
+        rows="3"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        placeholder="Opcional"
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-indigo-600 text-white font-bold py-2 rounded hover:bg-indigo-700 transition"
+    >
+      Agregar Calificación
+    </button>
+  </form>
+</div>
