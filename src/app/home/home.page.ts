@@ -5,7 +5,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe], // <- esto es lo importante
+  imports: [CommonModule, CurrencyPipe], 
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })

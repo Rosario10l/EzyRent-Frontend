@@ -1,6 +1,28 @@
-<h1>Productos de {{ categoria }}</h1>
-<div *ngFor="let producto of productosFiltrados">
-  <img [src]="producto.imagen" alt="{{ producto.nombre }}" width="100" />
-  <h2>{{ producto.nombre }}</h2>
-  <p>Precio: ${{ producto.precio }}</p>
-</div>
+<ion-content class="ion-padding">
+
+  <ion-card *ngFor="let producto of productosFiltrados">
+    
+    <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
+
+    <ion-card-header>
+      <ion-card-title>{{ producto.nombre }}</ion-card-title>
+      <ion-card-subtitle>{{ producto.precio | currency }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      {{ producto.descripcion || 'Sin descripción disponible.' }}
+    </ion-card-content>
+
+    <ion-button expand="block" color="primary" class="ion-margin-bottom">
+      Rentar ahora
+    </ion-button>
+
+  </ion-card>
+
+  <div *ngIf="productosFiltrados.length === 0" class="ion-text-center ion-margin-top">
+    <ion-text color="medium">
+      No se encontraron productos en la categoría "{{ categoriaSeleccionada }}"
+    </ion-text>
+  </div>
+
+</ion-content>
