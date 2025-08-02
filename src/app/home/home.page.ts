@@ -1,76 +1,48 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { ProductService, Articulo } from '../services/products.service';
+import { CommonModule } from '@angular/common';  
+import { IonicModule } from '@ionic/angular';  
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule, CurrencyPipe], 
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  standalone: true,
+  imports: [CommonModule, IonicModule],
 })
-export class HomePage{
-  // productos = [
-  //   { nombre: 'Tenis Adidas Classic', precio: 999, imagen: 'assets/adidas1.jpg' },
-  //   { nombre: 'Tenis Nike Air', precio: 1200, imagen: 'assets/nike1.jpg' },
-  //   { nombre: 'Fila Running', precio: 890, imagen: 'assets/fila1.jpg' },
-  // ];
+export class HomePage {
   products: Articulo[] = [];
   productsFiltrados: Articulo[] = [];
   categoria: string[] = [];
   isLoading = true;
-  
+
   error: string | null = null;
 
-  constructor(private router: Router,
-  private productservice: ProductService) {}
-  
- ngOnInit() {
+  constructor(private router: Router, private productService: ProductService) {}
+
+  ngOnInit() {
     this.cargarProductos();
   }
 
-  async cargarProductos() {
-    try {
-      this.isLoading = true;
-      this.error = null;
-      
-      interface GetArticulosResponse {
-        activo: boolean;
-        categoria?: { nombre: string };
-        id: number;
-        nombre: string;
-        // agrega otros campos según la definición de Articulo
+  cargarProductos() {
+    this.isLoading = true;
+    this.productService.getArticulos().subscribe({
+      next: (productos: Articulo[]) => {  
+        this.products = productos.filter(p => p.activo); 
+        this.productsFiltrados = this.products;
+        this.extraerCategorias();
+        this.isLoading = false;
+      },
+      error: (error: any) => {  
+        console.error('Error al cargar productos:', error);
+        this.error = 'Error al cargar los productos. Intenta de nuevo.';
+        this.isLoading = false;
       }
-
-      interface GetArticulosError {
-        message?: string;
-        // agrega otros campos de error si es necesario
-      }
-
-      this.productservice.getArticulos().subscribe({
-        next: (products: GetArticulosResponse[]) => {
-          this.products = products.filter((p: GetArticulosResponse) => p.activo);
-          this.productsFiltrados = this.products;
-          this.extraerCategorias();
-          this.isLoading = false;
-        },
-        error: (error: GetArticulosError) => {
-          console.error('Error al cargar productos:', error);
-          this.error = 'Error al cargar los productos. Intenta de nuevo.';
-          this.isLoading = false;
-        }
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      this.error = 'Error de conexión con el servidor.';
-      this.isLoading = false;
-    }
+    });
   }
 
-
-    extraerCategorias() {
+  extraerCategorias() {
     const categoriasSet = new Set<string>();
     this.products.forEach(producto => {
       if (producto.categoria?.nombre) {
@@ -84,10 +56,26 @@ export class HomePage{
     if (categoria === 'todos') {
       this.productsFiltrados = this.products;
     } else {
-      this.productsFiltrados = this.products.filter(
-        products => products.categoria?.nombre.toLowerCase() === categoria.toLowerCase()
-      );
+      const categoriaId = this.obtenerCategoriaId(categoria);
+      this.productService.getArticulosByCategoria(categoriaId).subscribe({
+        next: (productos: Articulo[]) => {  
+          this.productsFiltrados = productos;
+        },
+        error: (error: any) => {  
+          console.error('Error al obtener productos filtrados:', error);
+          this.error = 'No se pudieron cargar los productos de esta categoría.';
+        },
+      });
     }
+  }
+
+  obtenerCategoriaId(categoriaNombre: string): number {
+    const categorias: { [key: string]: number } = { 
+      'Electrónica': 1,
+      'Herramientas': 2,
+      'Ropa': 3,
+    };
+    return categorias[categoriaNombre] || 0; 
   }
 
   verDetalleProducto(producto: Articulo) {
@@ -105,16 +93,12 @@ export class HomePage{
     }).format(precio);
   }
 
+  toggleFavorite(producto: Articulo, event: Event) {
+    event.stopPropagation();
+    console.log('Se hizo clic en el corazón para:', producto.nombre);
+  }
 
-
-toggleFavorite(producto: Articulo, event: Event) {
-  event.stopPropagation();
-  console.log('Se hizo clic en el corazón para:', producto.nombre);
+  agregarProducto() {
+    this.router.navigate(['/productos/nuevo']);
+  }
 }
-
-agregarProducto() {
-  this.router.navigate(['/productos/nuevo']); // ajusta según tus rutas
-}
-
-}
-

@@ -1,46 +1,25 @@
 <ion-content class="ion-padding">
   <div class="home-wrapper">
-    <div class="header">
-      <ion-icon name="menu-outline" class="icon"></ion-icon>
-      <ion-icon name="cart-outline" class="icon"></ion-icon>
-    </div>
-
-    <div class="greeting">
-      <h1 class="title">Hola</h1>
-      <p class="subtitle">Bienvenido a EzyRent</p>
-    </div>
-
     <div class="brand-header">
       <h2 class="brand-title">Elegir Categoria</h2>
       <a class="brand-viewall">Ver Todo</a>
     </div>
 
     <div class="brand-list">
-      <button class="brand-button">
+      <button class="brand-button" (click)="verCategoria('Electrónica')">
         <img src="assets/images/adidas.png" class="brand-logo" />
-        Adidas
+        Electrónica
       </button>
-      <button class="brand-button">
+      <button class="brand-button" (click)="verCategoria('Herramientas')">
         <img src="assets/images/nike.png" class="brand-logo" />
-        Nike
+        Herramientas
       </button>
-      <button class="brand-button">Fila</button>
-    </div>
-
-    <div class="add-product-wrapper">
-      <button class="add-product-button" (click)="agregarProducto()">
-      <ion-icon name="add-circle-outline"></ion-icon>
-        Agregar Producto
+      <button class="brand-button" (click)="verCategoria('Ropa')">
+        <img src="assets/images/fila.png" class="brand-logo" />
+        Ropa
       </button>
     </div>
 
-    <!-- Nuevos productos -->
-    <div class="brand-header">
-      <h2 class="brand-title">Productos</h2>
-      <a class="brand-viewall">Ver Todo</a>
-    </div>
-
-    <!-- Productos -->
     <div class="product-grid">
       <div
         *ngFor="let producto of productsFiltrados"
@@ -73,9 +52,6 @@
           >
             {{ producto.cantidad_disponible > 0 ? 'Disponible' : 'Agotado' }}
           </span>
-          <div class="stock-info">
-            Cantidad Disponible: {{ producto.cantidad_disponible }}
-          </div>
         </div>
       </div>
     </div>
