@@ -100,8 +100,13 @@ toggleFavorite(producto: Articulo, event: Event) {
 }
 
 agregarProducto() {
-  this.router.navigate(['/new-product']); 
+  this.router.navigate(['/new-product']);
 }
+
+ ionViewWillEnter() {
+    this.cargarProductos(); 
+  }
+
 
 }
 
