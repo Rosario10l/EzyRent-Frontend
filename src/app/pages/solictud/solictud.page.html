@@ -1,0 +1,26 @@
+<ion-header class="ion-padding">
+  <ion-toolbar color="primary">
+    <ion-title>Solicitudes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="space-y-4">
+    <div *ngFor="let solicitud of solicitudes" class="p-4 rounded-lg border shadow-sm bg-white">
+      <p><strong>Usuario ID:</strong> {{ solicitud.usuarioId }}</p>
+      <p><strong>Estado:</strong>
+        <span [ngClass]="{
+          'text-yellow-500': solicitud.estado === 'pendiente',
+          'text-green-600': solicitud.estado === 'aprobado',
+          'text-red-500': solicitud.estado === 'rechazado'
+        }">{{ solicitud.estado }}</span>
+      </p>
+      <p><strong>Fecha:</strong> {{ solicitud.createdAt | date: 'short' }}</p>
+
+      <div class="flex gap-2 mt-3" *ngIf="solicitud.estado === 'pendiente'">
+        <ion-button size="small" color="success" (click)="confirmarAccion(solicitud.id, 'aprobar')">Aprobar</ion-button>
+        <ion-button size="small" color="danger" (click)="confirmarAccion(solicitud.id, 'rechazar')">Rechazar</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
