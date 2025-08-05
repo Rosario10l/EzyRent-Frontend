@@ -78,7 +78,7 @@ export class HomePage{
   }
 
   verDetalleProducto(producto: Articulo) {
-    this.router.navigate(['/producto', producto.id]);
+    this.router.navigate(['/detalles', producto.id]);
   }
 
   onImageError(event: any) {
@@ -104,7 +104,7 @@ agregarProducto() {
 }
 
  ionViewWillEnter() {
-    this.cargarProductos(); 
+    this.cargarProductos();
   }
 
 

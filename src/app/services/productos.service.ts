@@ -19,7 +19,7 @@ export class ProductosService {
   }
 
   getOne(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
   create(data: any): Observable<any> {

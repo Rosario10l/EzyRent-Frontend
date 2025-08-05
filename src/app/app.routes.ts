@@ -18,6 +18,10 @@ export const routes: Routes = [
   loadComponent: () => import('./new-product/new-product.component').then(m => m.NewProductComponent)
   },
   {
+    path: 'detalles/:id',
+    loadComponent: () => import('./detalles/detalles.component').then(m => m.DetallesComponent)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
