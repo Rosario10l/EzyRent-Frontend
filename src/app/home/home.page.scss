@@ -227,3 +227,35 @@
   font-size: 18px;
 }
 
+.modal-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.date-display {
+  text-align: center;
+  p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+.quantity-buttons-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.quantity-buttons-wrapper ion-input {
+  text-align: center;
+  width: 50px;
+}
+
+.fecha-label {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2em;
+}

@@ -1,33 +1,45 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { ProductService, Articulo } from '../services/products.service';
+import { RentaService, Renta } from '../services/renta.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule],
+  imports: [CommonModule, IonicModule, RouterModule, FormsModule, CurrencyPipe, DatePipe],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  providers: [DatePipe]
 })
-export class HomePage{
-  // productos = [
-  //   { nombre: 'Tenis Adidas Classic', precio: 999, imagen: 'assets/adidas1.jpg' },
-  //   { nombre: 'Tenis Nike Air', precio: 1200, imagen: 'assets/nike1.jpg' },
-  //   { nombre: 'Fila Running', precio: 890, imagen: 'assets/fila1.jpg' },
-  // ];
+export class HomePage implements OnInit {
   products: Articulo[] = [];
   productsFiltrados: Articulo[] = [];
   categoria: string[] = [];
+  selectedCategory: string = 'todos'; // Agregamos esta propiedad
   isLoading = true;
-  
   error: string | null = null;
 
-  constructor(private router: Router,
-  private productservice: ProductService) {}
-  
- ngOnInit() {
+  isModalOpen: boolean = false;
+  selectedProduct: Articulo | null = null;
+  fecha_inicio: string | null = null;
+  fecha_fin: string | null = null;
+  cantidadARentar: number = 1;
+  today: string;
+
+  constructor(
+    private router: Router,
+    private productservice: ProductService,
+    private datePipe: DatePipe,
+    private toastController: ToastController,
+    private rentaService: RentaService
+  ) {
+    this.today = new Date().toISOString();
+  }
+
+  ngOnInit() {
     this.cargarProductos();
   }
 
@@ -35,7 +47,7 @@ export class HomePage{
     try {
       this.isLoading = true;
       this.error = null;
-      
+
       this.productservice.getArticulos().subscribe({
         next: (products) => {
           this.products = products.filter(p => p.activo);
@@ -56,8 +68,7 @@ export class HomePage{
     }
   }
 
-
-    extraerCategorias() {
+  extraerCategorias() {
     const categoriasSet = new Set<string>();
     this.products.forEach(producto => {
       if (producto.categoria?.nombre) {
@@ -68,6 +79,7 @@ export class HomePage{
   }
 
   verCategoria(categoria: string) {
+    this.selectedCategory = categoria;
     if (categoria === 'todos') {
       this.productsFiltrados = this.products;
     } else {
@@ -77,8 +89,83 @@ export class HomePage{
     }
   }
 
+  async openRentalModal(producto: Articulo): Promise<void> {
+    if (producto.cantidad_disponible <= 0) {
+      const toast = await this.toastController.create({
+        message: 'Este producto no está disponible para renta.',
+        duration: 2000,
+        position: 'bottom',
+        color: 'danger'
+      });
+      toast.present();
+      return;
+    }
+    this.selectedProduct = producto;
+    
+    this.fecha_inicio = null;
+    this.fecha_fin = null;
+    this.cantidadARentar = 1;
+
+    this.isModalOpen = true;
+  }
+
+  closeRentalModal(): void {
+    this.isModalOpen = false;
+    this.selectedProduct = null;
+    this.fecha_inicio = null;
+    this.fecha_fin = null;
+  }
+  
+  incrementarCantidad(): void {
+    if (this.selectedProduct && this.cantidadARentar < this.selectedProduct.cantidad_disponible) {
+      this.cantidadARentar++;
+    }
+  }
+
+  decrementarCantidad(): void {
+    if (this.cantidadARentar > 1) {
+      this.cantidadARentar--;
+    }
+  }
+
+  async confirmRental(): Promise<void> {
+    if (!this.selectedProduct || !this.fecha_inicio || !this.fecha_fin || this.cantidadARentar <= 0) {
+      this.presentToast('Por favor, selecciona una cantidad y un rango de fechas.', 'warning');
+      return;
+    }
+
+    const nuevaRenta: Renta = {
+      productoId: this.selectedProduct.id,
+      cantidad: this.cantidadARentar,
+      fecha_inicio: this.fecha_inicio,
+      fecha_fin: this.fecha_fin
+    };
+
+    this.rentaService.crearRenta(nuevaRenta).subscribe({
+      next: (response) => {
+        console.log('Renta confirmada:', response);
+        this.presentToast('Renta confirmada exitosamente.', 'success');
+        this.closeRentalModal();
+      },
+      error: (error) => {
+        console.error('Error al crear la renta:', error);
+        this.presentToast('Error al confirmar la renta. Intenta de nuevo.', 'danger');
+      }
+    });
+  }
+  
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom',
+      color
+    });
+    toast.present();
+  }
+  
   verDetalleProducto(producto: Articulo) {
-    this.router.navigate(['/producto', producto.id]);
+    this.router.navigate(['/productos', producto.id]);
   }
 
   onImageError(event: any) {
@@ -92,16 +179,12 @@ export class HomePage{
     }).format(precio);
   }
 
+  toggleFavorite(producto: Articulo, event: Event) {
+    event.stopPropagation();
+    console.log('Se hizo clic en el corazón para:', producto.nombre);
+  }
 
-
-toggleFavorite(producto: Articulo, event: Event) {
-  event.stopPropagation();
-  console.log('Se hizo clic en el corazón para:', producto.nombre);
+  agregarProducto() {
+    this.router.navigate(['/productos/nuevo']);
+  }
 }
-
-agregarProducto() {
-  this.router.navigate(['/productos/nuevo']); // ajusta según tus rutas
-}
-
-}
-

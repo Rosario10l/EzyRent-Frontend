@@ -1,83 +1,209 @@
-<ion-content class="ion-padding">
+<ion-content class="bg-gray-100 ion-padding">
   <div class="home-wrapper">
-    <div class="header">
-      <ion-icon name="menu-outline" class="icon"></ion-icon>
-      <ion-icon name="cart-outline" class="icon"></ion-icon>
-    </div>
 
-    <div class="greeting">
-      <h1 class="title">Hola</h1>
-      <p class="subtitle">Bienvenido a EzyRent</p>
-    </div>
+    <!-- Loading State -->
+    @if (isLoading) {
+      <div class="flex flex-col justify-center items-center h-full">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <span class="ml-2 text-gray-500 mt-2">Cargando productos...</span>
+      </div>
+    }
 
-    <div class="brand-header">
-      <h2 class="brand-title">Elegir Categoria</h2>
-      <a class="brand-viewall">Ver Todo</a>
-    </div>
+    <!-- Error State -->
+    @if (error && !isLoading) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+        <p class="text-sm font-semibold">{{ error }}</p>
+        <button (click)="cargarProductos()" class="mt-2 bg-red-500 text-white px-4 py-2 text-sm rounded-md shadow-sm hover:bg-red-600 transition-colors">
+          Reintentar
+        </button>
+      </div>
+    }
 
-    <div class="brand-list">
-      <button class="brand-button">
-        <img src="assets/images/adidas.png" class="brand-logo" />
-        Adidas
-      </button>
-      <button class="brand-button">
-        <img src="assets/images/nike.png" class="brand-logo" />
-        Nike
-      </button>
-      <button class="brand-button">Fila</button>
-    </div>
-
-    <div class="add-product-wrapper">
-      <button class="add-product-button" (click)="agregarProducto()">
-      <ion-icon name="add-circle-outline"></ion-icon>
-        Agregar Producto
-      </button>
-    </div>
-
-    <!-- Nuevos productos -->
-    <div class="brand-header">
-      <h2 class="brand-title">Productos</h2>
-      <a class="brand-viewall">Ver Todo</a>
-    </div>
-
-    <!-- Productos -->
-    <div class="product-grid">
-      <div
-        *ngFor="let producto of productsFiltrados"
-        class="product-card"
-        (click)="verDetalleProducto(producto)"
-      >
-        <div class="image-wrapper">
-          <img
-            [src]="producto.imagen_url || 'assets/images/no-image.png'"
-            [alt]="producto.nombre"
-            class="product-image"
-            (error)="onImageError($event)"
-          />
-          <ion-icon
-            name="heart-outline"
-            class="favorite-icon"
-            (click)="toggleFavorite(producto, $event)"
-          ></ion-icon>
+    <!-- Main Content -->
+    @if (!isLoading && !error) {
+      <div>
+        <!-- Encabezado y Saludo -->
+        <div class="header flex justify-between items-center mb-4">
+          <ion-icon name="menu-outline" class="icon text-2xl text-gray-700"></ion-icon>
+          <ion-icon name="cart-outline" class="icon text-2xl text-gray-700"></ion-icon>
         </div>
-
-        <div class="product-info">
-          <h3 class="product-name">{{ producto.nombre }}</h3>
-          <p class="product-price">{{ getPrecioFormateado(producto.precio) }}</p>
-          <span
-            class="availability"
-            [ngClass]="{
-              'disponible': producto.cantidad_disponible > 0,
-              'agotado': producto.cantidad_disponible <= 0
-            }"
-          >
-            {{ producto.cantidad_disponible > 0 ? 'Disponible' : 'Agotado' }}
-          </span>
-          <div class="stock-info">
-            Cantidad Disponible: {{ producto.cantidad_disponible }}
-          </div>
+    
+        <div class="greeting mb-6">
+          <h1 class="title text-3xl font-bold text-gray-800">Hola</h1>
+          <p class="subtitle text-sm text-gray-500">Bienvenido a EzyRent</p>
+        </div>
+    
+        <!-- Botón para agregar producto -->
+        <div class="add-product-wrapper mb-6 text-center">
+          <button (click)="agregarProducto()" class="add-product-button w-full flex items-center justify-center bg-blue-500 text-white px-4 py-3 rounded-lg shadow-lg hover:bg-blue-600 transition-colors">
+            <ion-icon name="add-circle-outline" class="mr-2"></ion-icon>
+            Agregar Producto
+          </button>
+        </div>
+    
+        <!-- Categorías -->
+        <div class="brand-header flex justify-between items-center mb-4">
+          <h2 class="brand-title text-xl font-semibold text-gray-800">Elegir Categoría</h2>
+          <a class="brand-viewall text-sm text-blue-500 hover:text-blue-600 transition-colors">Ver Todo</a>
+        </div>
+        <div class="categorias flex gap-3 overflow-x-auto mb-6 scrollbar-hide">
+          <button 
+            class="px-4 py-2 text-sm rounded-full whitespace-nowrap transition-colors" 
+            [class.bg-blue-600]="selectedCategory === 'todos'" 
+            [class.text-white]="selectedCategory === 'todos'"
+            [class.shadow-md]="selectedCategory === 'todos'"
+            [class.bg-gray-200]="selectedCategory !== 'todos'"
+            [class.text-gray-700]="selectedCategory !== 'todos'"
+            (click)="verCategoria('todos')">
+            Todos
+          </button>
+          
+          @for (cat of categoria; track cat) {
+            <button 
+              class="px-4 py-2 text-sm rounded-full whitespace-nowrap transition-colors" 
+              [class.bg-blue-600]="selectedCategory === cat" 
+              [class.text-white]="selectedCategory === cat"
+              [class.shadow-md]="selectedCategory === cat"
+              [class.bg-gray-200]="selectedCategory !== cat"
+              [class.text-gray-700]="selectedCategory !== cat"
+              (click)="verCategoria(cat)">
+              {{ cat }}
+            </button>
+          } @empty {
+            <p class="text-gray-500">No hay categorías disponibles.</p>
+          }
+        </div>
+        
+        <!-- Productos -->
+        <div class="brand-header flex justify-between items-center mb-4">
+          <h2 class="brand-title text-xl font-semibold text-gray-800">Productos</h2>
+          <a class="brand-viewall text-sm text-blue-500 hover:text-blue-600 transition-colors">Ver Todo</a>
+        </div>
+        
+        <div class="product-grid grid grid-cols-2 gap-4">
+          @for (producto of productsFiltrados; track producto.id) {
+            <div 
+              class="product-card relative bg-white border border-gray-200 rounded-xl p-2 cursor-pointer transition-shadow hover:shadow-lg" 
+              (click)="openRentalModal(producto)">
+          
+              <div class="image-wrapper relative overflow-hidden rounded-lg">
+                <img
+                  [src]="producto.imagen_url || 'assets/images/no-image.png'"
+                  [alt]="producto.nombre"
+                  class="product-image w-full h-32 object-cover rounded-lg"
+                  (error)="onImageError($event)"/>
+                <ion-icon
+                  name="heart-outline"
+                  class="favorite-icon absolute top-2 right-2 text-gray-400 text-xl z-10"
+                  (click)="toggleFavorite(producto, $event)"
+                ></ion-icon>
+              </div>
+          
+              <div class="product-info mt-2 px-1">
+                <h3 class="product-name font-semibold text-sm leading-tight truncate">{{ producto.nombre }}</h3>
+                <div class="flex items-center justify-between mt-1">
+                  <p class="product-price text-sm font-bold text-green-600">{{ getPrecioFormateado(producto.precio) }}</p>
+                  <span
+                    class="availability text-xs px-2 py-1 rounded-full font-medium"
+                    [class.bg-green-100]="producto.cantidad_disponible > 0"
+                    [class.text-green-700]="producto.cantidad_disponible > 0"
+                    [class.bg-red-100]="producto.cantidad_disponible <= 0"
+                    [class.text-red-700]="producto.cantidad_disponible <= 0"
+                  >
+                    {{ producto.cantidad_disponible > 0 ? 'Disponible' : 'Agotado' }}
+                  </span>
+                </div>
+                <div class="stock-info text-xs text-gray-500 mt-1">
+                  Cantidad Disponible: {{ producto.cantidad_disponible }}
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="text-center py-8 bg-white rounded-xl shadow-sm mt-4 col-span-2">
+              <ion-icon name="cube-outline" class="text-7xl text-gray-300"></ion-icon>
+              <p class="text-gray-500 mt-4 text-lg font-medium">No hay productos disponibles</p>
+              <button (click)="cargarProductos()" class="mt-4 bg-blue-500 text-white px-6 py-3 rounded-md shadow-sm hover:bg-blue-600 transition-colors text-sm">
+                Actualizar
+              </button>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
   </div>
+
+  <!-- Modal para la selección de fechas de renta -->
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeRentalModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="closeRentalModal()">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Rentar {{ selectedProduct?.nombre }}</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <div class="modal-content-wrapper">
+          <!-- Sección para la selección de cantidad -->
+          <ion-item class="quantity-control">
+            <ion-label position="stacked">Cantidad a Rentar</ion-label>
+            <div class="quantity-buttons-wrapper flex items-center justify-between w-full mt-2">
+              <ion-button (click)="decrementarCantidad()" [disabled]="cantidadARentar <= 1" fill="clear">
+                <ion-icon name="remove-circle-outline"></ion-icon>
+              </ion-button>
+              <ion-input type="number" [(ngModel)]="cantidadARentar" readonly class="text-center w-1/3"></ion-input>
+              <ion-button (click)="incrementarCantidad()" [disabled]="cantidadARentar >= (selectedProduct?.cantidad_disponible ?? 0)" fill="clear">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
+          
+          <!-- Calendario para la fecha de inicio -->
+          <ion-item>
+            <ion-label class="fecha-label" position="stacked">Fecha de inicio</ion-label>
+            <ion-datetime
+              presentation="date"
+              [min]="today"
+              [(ngModel)]="fecha_inicio"
+              class="w-full"
+            ></ion-datetime>
+          </ion-item>
+
+          <!-- Calendario para la fecha de fin -->
+          <ion-item>
+            <ion-label class="fecha-label" position="stacked">Fecha de fin</ion-label>
+            <ion-datetime
+              presentation="date"
+              [min]="fecha_inicio || today"
+              [(ngModel)]="fecha_fin"
+              class="w-full"
+            ></ion-datetime>
+          </ion-item>
+          
+          <div class="date-display text-center my-4">
+            <!-- Muestra las fechas seleccionadas si existen -->
+            @if (fecha_inicio) {
+              <p>Fecha de inicio: <strong>{{ fecha_inicio | date:'mediumDate' }}</strong></p>
+            }
+            @if (fecha_fin) {
+              <p>Fecha de fin: <strong>{{ fecha_fin | date:'mediumDate' }}</strong></p>
+            }
+          </div>
+
+          <ion-button
+            expand="block"
+            color="primary"
+            [disabled]="!fecha_inicio || !fecha_fin || cantidadARentar <= 0"
+            (click)="confirmRental()">
+            Confirmar Renta
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</div>
 </ion-content>
