@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { ProductService, Articulo } from '../services/products.service';
 import { RentaService, Renta } from '../services/renta.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule, FormsModule, CurrencyPipe, DatePipe],
+  // Corregido: Quitamos FormsModule ya que IonicModule lo incluye
+  imports: [CommonModule, IonicModule, RouterModule, DatePipe, FormsModule], 
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   providers: [DatePipe]
@@ -26,13 +27,12 @@ export class HomePage implements OnInit {
   selectedProduct: Articulo | null = null;
   fecha_inicio: string | null = null;
   fecha_fin: string | null = null;
-  cantidadARentar: number = 1;
+  cantidad: number = 1;
   today: string;
 
   constructor(
     private router: Router,
     private productservice: ProductService,
-    private datePipe: DatePipe,
     private toastController: ToastController,
     private rentaService: RentaService
   ) {
@@ -104,7 +104,7 @@ export class HomePage implements OnInit {
     
     this.fecha_inicio = null;
     this.fecha_fin = null;
-    this.cantidadARentar = 1;
+    this.cantidad = 1;
 
     this.isModalOpen = true;
   }
@@ -117,26 +117,26 @@ export class HomePage implements OnInit {
   }
   
   incrementarCantidad(): void {
-    if (this.selectedProduct && this.cantidadARentar < this.selectedProduct.cantidad_disponible) {
-      this.cantidadARentar++;
+    if (this.selectedProduct && this.cantidad < this.selectedProduct.cantidad_disponible) {
+      this.cantidad++;
     }
   }
 
   decrementarCantidad(): void {
-    if (this.cantidadARentar > 1) {
-      this.cantidadARentar--;
+    if (this.cantidad > 1) {
+      this.cantidad--;
     }
   }
 
   async confirmRental(): Promise<void> {
-    if (!this.selectedProduct || !this.fecha_inicio || !this.fecha_fin || this.cantidadARentar <= 0) {
+    if (!this.selectedProduct || !this.fecha_inicio || !this.fecha_fin || this.cantidad <= 0) {
       this.presentToast('Por favor, selecciona una cantidad y un rango de fechas.', 'warning');
       return;
     }
 
     const nuevaRenta: Renta = {
-      productoId: this.selectedProduct.id,
-      cantidad: this.cantidadARentar,
+      articuloId: this.selectedProduct.id,
+      cantidad: this.cantidad,
       fecha_inicio: this.fecha_inicio,
       fecha_fin: this.fecha_fin
     };
@@ -187,4 +187,15 @@ export class HomePage implements OnInit {
   agregarProducto() {
     this.router.navigate(['/productos/nuevo']);
   }
+
+  onDateChange(event: any) {
+  const value = event.detail.value;
+  if (value && value.start && value.end) {
+    this.fecha_inicio = value.start;
+    this.fecha_fin = value.end;
+  } else {
+    this.fecha_inicio = null;
+    this.fecha_fin = null;
+  }
+}
 }
