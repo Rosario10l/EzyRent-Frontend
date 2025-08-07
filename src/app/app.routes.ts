@@ -16,13 +16,15 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./pages/register/register.page').then((m) => m.RegisterPage),
   },
+    {
+    path: 'solictud',
+    loadComponent: () => import('./pages/solictud/solictud.page').then( m => m.SolictudPage)
+  },
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
-  },  {
-    path: 'solictud',
-    loadComponent: () => import('./pages/solictud/solictud.page').then( m => m.SolictudPage)
   },
+
 
 ];

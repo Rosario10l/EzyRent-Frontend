@@ -20,22 +20,22 @@ export class SolicitudesService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   crearSolicitud(data: any) {
-    return this.http.post(`${this.apiUrl}solicitud`, data);
+    return this.http.post(`${this.apiUrl}solicitud-rentador`, data);
   }
 
   obtenerTodas() {
-    return this.http.get<Solicitud[]>(`${this.apiUrl}solicitud`).pipe(
+    return this.http.get<Solicitud[]>(`${this.apiUrl}solicitud-rentador`).pipe(
       tap((solicitudes) => this.solicutdesSubject.next(solicitudes))
     );
   }
   aprobarSolitud(id: number) {
-    return this.http.patch(`${this.apiUrl}solicitud/${id}/aprobar`, {});
+    return this.http.patch(`${this.apiUrl}solicitud-rentador/${id}/aprobar`, {});
   }
   rechazarSolicitud(id: number) {
-    return this.http.patch(`${this.apiUrl}solicitud/${id}/rechazar`, {});
+    return this.http.patch(`${this.apiUrl}solicitud-rentador/${id}/rechazar`, {});
   }
   tieneSolicitudPendiente(usuarioId: string) {
-    return this.http.get<boolean>(`${this.apiUrl}solicitud/pendiente/${usuarioId}`);
+    return this.http.get<boolean>(`${this.apiUrl}solicitud-rentador/pendiente/${usuarioId}`);
   }
 
 }

@@ -1,22 +1,120 @@
 <ion-app>
-  <ion-menu content-id="main-content" side="start" type="overlay">
-    <ion-content>
-      <ion-list>
+  <!-- Menú lateral mejorado -->
+  <ion-menu content-id="main-content" side="start" type="overlay" class="custom-menu">
+    <ion-content class="ion-padding bg-white">
+      <!-- Encabezado del menú -->
+      <div class="menu-header">
+        @if (authService.currentUser$ | async; as user) {
+        <ion-avatar class="w-16 h-16 mx-auto my-4">
+          <img [src]="'https://i.pravatar.cc/150?u=' + (user?.email || 'default')" alt="Usuario">
+        </ion-avatar>
+        <h3 class="text-center font-semibold text-lg text-gray-900">
+          {{ user?.name || 'Usuario' }}
+        </h3>
+        <p class="text-center text-sm text-gray-500 mt-1">
+          {{ user?.email || 'usuario@ejemplo.com' }}
+        </p>
+        }
+
+        <!-- @if (pendingRequests > 0) {
+        <ion-badge slot="end" color="danger">
+          {{ pendingRequests }} pendiente(s) solicitud(es)
+        </ion-badge>
+        } -->
+      </div>
+
+
+      <ion-list lines="none" class="mt-6">
         @for (item of menuItems; track item) {
-          @if (shouldShow(item)) {
-            <ion-item
-              [routerLink]="item.url"
-              (click)="handleItemClick(item)"
-            >
-              <ion-label>{{ item.title }}</ion-label>
-            </ion-item>
+        @if (shouldShow(item)) {
+        <ion-item [routerLink]="item.url" (click)="handleItemClick(item)"
+          class="transition-colors duration-200 hover:bg-gray-100 rounded-lg my-1"
+          [class.bg-gray-100]="isActive(item.url)">
+          <ion-icon [name]="getIconForItem(item)" slot="start" class="text-gray-600"></ion-icon>
+          <ion-label class="font-medium text-gray-700">{{ item.title }}</ion-label>
+          @if (item.url === '/solictud') {
+          <ion-badge slot="end" color="danger" *ngIf="pendingRequests > 0">
+            {{ pendingRequests }}
+          </ion-badge>
           }
+        </ion-item>
+        }
         }
       </ion-list>
+
+      <!-- Sección inferior del menú -->
+      <div class="mt-auto pt-4 border-t border-gray-200">
+        <ion-item button (click)="toggleDarkMode()" class="rounded-lg">
+          <ion-icon
+            [name]="isDarkMode ? 'moon' : 'sunny'"
+            slot="start"
+            class="text-gray-600"
+          ></ion-icon>
+          <ion-label class="font-medium text-gray-700">
+            {{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}
+          </ion-label>
+          <ion-toggle
+            slot="end"
+            [checked]="isDarkMode"
+            (ionChange)="toggleDarkMode()"
+          ></ion-toggle>
+        </ion-item>
+      </div>
     </ion-content>
   </ion-menu>
 
+  <!-- Contenido principal con navbar mejorada -->
   <div class="ion-page" id="main-content">
-    <ion-router-outlet></ion-router-outlet>
+    <!-- Barra superior estilo Airbnb -->
+    <ion-header class="border-b border-gray-200 bg-white">
+      <ion-toolbar class="">
+        <div class="flex items-center justify-between w-full">
+          <!-- Botón del menú y logo -->
+          <div class="flex items-center ">
+            <ion-buttons slot="start">
+              <ion-menu-button class="text-gray-900 hover:bg-gray-100 p-2 rounded-full">
+                <ion-icon name="menu-outline" class="text-xl"></ion-icon>
+              </ion-menu-button>
+            </ion-buttons>
+
+            <div class="flex items-center">
+              <ion-img src="assets/logo.svg" class="h-8 w-auto" alt="Logo"></ion-img>
+              <span class="ml-2 text-lg font-bold text-gray-900 hidden md:block">EzyRent</span>
+            </div>
+          </div>
+
+          <!-- Título de página (centrado) -->
+          <div class="flex-1 text-center px-4">
+            <ion-title class="text-lg font-semibold text-gray-900 truncate max-w-xs mx-auto">
+              {{ currentPageTitle }}
+            </ion-title>
+          </div>
+
+          <!-- Acciones derecha (notificaciones y perfil) -->
+          <div class="flex items-center space-x-3">
+            <ion-button
+              fill="clear"
+              class="relative p-2 text-gray-700 hover:bg-gray-100 rounded-full"
+              (click)="presentNotifications()"
+            >
+              <ion-icon slot="icon-only" name="notifications-outline" class="text-xl"></ion-icon>
+              @if (unreadNotifications > 0 && authService.isLoggedIn()) {
+                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              }
+            </ion-button>
+
+            @if (authService.currentUser$ | async; as user) {
+              <ion-button fill="clear" class="p-0" [routerLink]="'/perfil'">
+                <ion-avatar class="w-8 h-8 border-2 border-white shadow-sm">
+                  <img [src]="'https://i.pravatar.cc/150?u=' + (user?.email || 'default')" alt="Perfil">
+                </ion-avatar>
+              </ion-button>
+            }
+          </div>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-router-outlet (ionViewWillEnter)="updateCurrentPageTitle()"></ion-router-outlet>
   </div>
 </ion-app>

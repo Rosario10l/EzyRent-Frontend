@@ -17,6 +17,7 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
   private isAuthenticated = new BehaviorSubject<boolean>(false);
   private currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
     const token = localStorage.getItem('token');

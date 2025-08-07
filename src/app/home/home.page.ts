@@ -10,9 +10,7 @@ import { MenuController } from '@ionic/angular';
   styleUrls: ['home.page.scss'],
  imports: [
     IonButtons,
-    IonMenuButton,  // <-- Añade esto al array de imports
-    IonMenu,
-    IonButton,
+    IonMenuButton,
     IonHeader,
     IonToolbar,
     IonTitle,
