@@ -92,11 +92,6 @@
                   [alt]="producto.nombre"
                   class="product-image w-full h-32 object-cover rounded-lg"
                   />
-                <ion-icon
-                  name="heart-outline"
-                  class="favorite-icon absolute top-2 right-2 text-gray-400 text-xl z-10"
-                  (click)="toggleFavorite(producto, $event)"
-                ></ion-icon>
               </div>
           
               <div class="product-info mt-2 px-1">
@@ -112,6 +107,7 @@
                   >
                     {{ producto.cantidad_disponible > 0 ? 'Disponible' : 'Agotado' }}
                   </span>
+
                 </div>
                 <div class="stock-info text-xs text-gray-500 mt-1">
                   Cantidad Disponible: {{ producto.cantidad_disponible }}

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 export interface Renta {
   articuloId: number;
+  // usuarioId: number;
   cantidad: number;
   fecha_inicio: string;
   fecha_fin: string;

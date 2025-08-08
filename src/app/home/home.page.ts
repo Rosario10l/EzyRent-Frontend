@@ -3,14 +3,15 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { ProductService, Articulo } from '../services/products.service';
+import { AuthService, User } from '../services/auth.service';
 import { RentaService, Renta } from '../services/renta.service';
 import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  // Corregido: Quitamos FormsModule ya que IonicModule lo incluye
-  imports: [CommonModule, IonicModule, RouterModule, DatePipe, FormsModule], 
+  imports: [CommonModule, IonicModule, RouterModule, DatePipe, FormsModule ], 
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   providers: [DatePipe]
@@ -19,12 +20,13 @@ export class HomePage implements OnInit {
   products: Articulo[] = [];
   productsFiltrados: Articulo[] = [];
   categoria: string[] = [];
-  selectedCategory: string = 'todos'; // Agregamos esta propiedad
+  selectedCategory: string = 'todos';
   isLoading = true;
   error: string | null = null;
 
   isModalOpen: boolean = false;
   selectedProduct: Articulo | null = null;
+  selectedUsuario: User | null = null;
   fecha_inicio: string | null = null;
   fecha_fin: string | null = null;
   cantidad: number = 1;
@@ -34,9 +36,14 @@ export class HomePage implements OnInit {
     private router: Router,
     private productservice: ProductService,
     private toastController: ToastController,
-    private rentaService: RentaService
+    private rentaService: RentaService,
+    private authService: AuthService,
   ) {
     this.today = new Date().toISOString();
+    // Suscribirse a los cambios del usuario para obtener su ID
+    // this.authService.currentUser$.subscribe(user => {
+    //     this.selectedUsuario = user;
+    // });
   }
 
   ngOnInit() {
@@ -93,8 +100,8 @@ export class HomePage implements OnInit {
     if (producto.cantidad_disponible <= 0) {
       const toast = await this.toastController.create({
         message: 'Este producto no está disponible para renta.',
-        duration: 2000,
-        position: 'bottom',
+        duration: 1000,
+        position: 'middle',
         color: 'danger'
       });
       toast.present();
@@ -130,12 +137,21 @@ export class HomePage implements OnInit {
 
   async confirmRental(): Promise<void> {
     if (!this.selectedProduct || !this.fecha_inicio || !this.fecha_fin || this.cantidad <= 0) {
-      this.presentToast('Por favor, selecciona una cantidad y un rango de fechas.', 'warning');
+      // El mensaje de error es más genérico para cubrir todos los campos faltantes
+      this.presentToast('Por favor, revisa que todos los campos de la renta estén completos.', 'warning');
       return;
     }
 
+    // const usuarioId = parseInt(this.selectedUsuario.id, 10);
+    // if (isNaN(usuarioId)) {
+    //   this.presentToast('El ID del usuario no es válido.', 'danger');
+    //   return;
+    // }
+
+    
     const nuevaRenta: Renta = {
       articuloId: this.selectedProduct.id,
+      // usuarioId: usuarioId,
       cantidad: this.cantidad,
       fecha_inicio: this.fecha_inicio,
       fecha_fin: this.fecha_fin
@@ -158,7 +174,7 @@ export class HomePage implements OnInit {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
-      position: 'bottom',
+      position: 'middle',
       color
     });
     toast.present();
@@ -179,10 +195,7 @@ export class HomePage implements OnInit {
     }).format(precio);
   }
 
-  toggleFavorite(producto: Articulo, event: Event) {
-    event.stopPropagation();
-    console.log('Se hizo clic en el corazón para:', producto.nombre);
-  }
+  
 
   agregarProducto() {
     this.router.navigate(['/productos/nuevo']);
@@ -198,4 +211,14 @@ export class HomePage implements OnInit {
     this.fecha_fin = null;
   }
 }
+
+ 
+  getAvailabilityText(quantity: number): string {
+    return quantity > 0 ? 'Disponible' : 'Agotado';
+  }
+
+
+  getAvailabilityClasses(quantity: number): string {
+    return quantity > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+  }
 }
