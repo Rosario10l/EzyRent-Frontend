@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
     { title: 'Inicio', url: '/home', showWhen: 'loggedIn', icon: 'home-outline' },
     { title: 'Iniciar sesión', url: '/login', showWhen: 'loggedOut', icon: 'log-in-outline' },
     { title: 'Registrarse', url: '/register', showWhen: 'loggedOut', icon: 'person-add-outline' },
-    { title: 'Solicitudes', url: '/solictud', showWhen: 'loggedIn', icon: 'document-text-outline' },
+    { title: 'Solicitudes', url: '/solictud', showWhen: 'loggedIn', showOnlyFor: 'admin', icon: 'document-text-outline' },
     { title: 'Cerrar sesión', url: '/login', showWhen: 'loggedIn', icon: 'log-out-outline', action: 'logout' },
   ];
 

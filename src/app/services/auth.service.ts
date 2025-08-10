@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment.prod';
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'landlord' | 'client';
+  rol: 'admin' | 'usuario';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -81,11 +81,7 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  isLandlord(): boolean {
-    return this.getCurrentUser()?.role === 'landlord';
-  }
-
   isAdmin(): boolean {
-    return this.getCurrentUser()?.role === 'admin';
+    return this.getCurrentUser()?.rol === 'admin';
   }
 }

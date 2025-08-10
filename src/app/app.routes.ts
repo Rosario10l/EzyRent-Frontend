@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
 
@@ -18,7 +19,8 @@ export const routes: Routes = [
   },
     {
     path: 'solictud',
-    loadComponent: () => import('./pages/solictud/solictud.page').then( m => m.SolictudPage)
+    loadComponent: () => import('./pages/solictud/solictud.page').then( m => m.SolictudPage),
+    canActivate: [AuthGuard,AdminGuard],
   },
   {
     path: '',
