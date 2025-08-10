@@ -186,3 +186,18 @@ ion-header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }
+.notification-popover {
+  --width: 400px;
+  --max-width: 400vw;
+}
+
+.notification-item {
+  --min-height: 72px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+
+  ion-label {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+}

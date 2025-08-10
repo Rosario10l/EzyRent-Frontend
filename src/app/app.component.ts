@@ -3,8 +3,7 @@ import {
   IonApp, IonRouterOutlet, IonList, IonContent, IonLabel,
   IonItem, IonMenu, IonMenuButton, IonButtons, IonButton,
   IonIcon, IonBadge, IonHeader, IonToolbar, IonTitle,
-  IonAvatar, IonToggle, IonImg
-} from '@ionic/angular/standalone';
+  IonAvatar, IonToggle, IonImg, IonPopover, IonListHeader } from '@ionic/angular/standalone';
 import { AuthService } from './services/auth.service';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -18,20 +17,60 @@ import { SolicitudesService } from './services/solicitudes.service';
 import { filter } from 'rxjs/operators';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { PopoverController } from '@ionic/angular/standalone';
 
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  date: Date;
+  read: boolean;
+  icon?: string;
+  route?: string;
+}
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [IonImg,
+  imports: [IonListHeader, IonPopover, IonImg,
     IonItem, IonApp, IonMenu, RouterLink, IonRouterOutlet,
     IonList, IonContent, IonLabel, IonMenuButton, IonButtons,
     IonButton, IonIcon, IonBadge, IonHeader, IonToolbar,
-    IonTitle, IonAvatar, IonToggle, CommonModule, AsyncPipe
+    IonTitle, IonAvatar, IonToggle, CommonModule, AsyncPipe, IonPopover, IonListHeader
   ]
 })
 export class AppComponent implements OnInit {
+
+  isNotificationsOpen = false;
+  notifications: Notification[] = [
+    {
+      id: 1,
+      title: 'Nueva solicitud',
+      message: 'Tienes una nueva solicitud de arriendo',
+      date: new Date(),
+      read: false,
+      icon: 'document-text-outline',
+      route: '/solicitudes'
+    },
+    {
+      id: 2,
+      title: 'Pago recibido',
+      message: 'Se ha procesado tu pago por $150.000',
+      date: new Date(Date.now() - 3600000),
+      read: false,
+      icon: 'cash-outline'
+    },
+    {
+      id: 3,
+      title: 'Recordatorio',
+      message: 'Tu arriendo finaliza en 2 días',
+      date: new Date(Date.now() - 86400000),
+      read: true,
+      icon: 'calendar-outline'
+    }
+  ];
   private authSubscription!: Subscription;
   menuItems = [
     { title: 'Inicio', url: '/home', showWhen: 'loggedIn', icon: 'home-outline' },
@@ -50,7 +89,8 @@ export class AppComponent implements OnInit {
     public authService: AuthService,
     private solicitudesService: SolicitudesService,
     private router: Router,
-    private titleService: Title
+    private titleService: Title,
+     private popoverCtrl: PopoverController
   ) {
     addIcons({ menuOutline, notificationsOutline, homeOutline, logInOutline, personAddOutline, documentTextOutline, logOutOutline, sunnyOutline, moonOutline, settingsOutline });
   }
@@ -130,7 +170,34 @@ export class AppComponent implements OnInit {
     document.body.classList.toggle('dark', this.isDarkMode);
   }
 
-  async presentNotifications() {
-    // Implementar lógica de notificaciones
+   async presentNotifications(ev?: Event) {
+    this.isNotificationsOpen = true;
+
+    // Actualiza las notificaciones no leídas
+    this.unreadNotifications = this.notifications.filter(n => !n.read).length;
   }
+
+  markAllAsRead() {
+    this.notifications = this.notifications.map(n => ({
+      ...n,
+      read: true
+    }));
+    this.unreadNotifications = 0;
+    this.isNotificationsOpen = false;
+  }
+
+  openNotification(notification: Notification) {
+    this.notifications = this.notifications.map(n =>
+      n.id === notification.id ? { ...n, read: true } : n
+    );
+
+    this.unreadNotifications = this.notifications.filter(n => !n.read).length;
+
+    if (notification.route) {
+      this.router.navigateByUrl(notification.route);
+    }
+
+    this.isNotificationsOpen = false;
+  }
+
 }
