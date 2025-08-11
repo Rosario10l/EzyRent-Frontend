@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { UsuarioService } from '../../services/usuario.service';
 import { HttpClientModule } from '@angular/common/http';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-perfil',
@@ -19,18 +19,27 @@ export class PerfilComponent implements OnInit {
   constructor(private usuarioService: UsuarioService) {}
 
   ngOnInit(): void {
-    // TODO: Reemplaza por el id real (p.ej. decodificado del JWT o guardado en localStorage)
-    const idUsuario = Number(localStorage.getItem('user_id') ?? 1);
+    // 1) Tomar el id del usuario guardado en localStorage al hacer login
+    // Puedes guardar 'user' en login: localStorage.setItem('user', JSON.stringify(res.user))
+    const raw = localStorage.getItem('user');
+    const idUsuario = raw ? Number(JSON.parse(raw).id) : null;
 
+    if (!idUsuario) {
+      this.error = 'No hay sesión activa';
+      this.loading = false;
+      return;
+    }
+
+    // 2) Llamar a la API: GET /usuario/:id
     this.usuarioService.obtenerUsuario(idUsuario).subscribe({
       next: (data) => {
         this.usuario = data;
         this.loading = false;
       },
       error: (err) => {
+        console.error(err);
         this.error = 'No se pudo cargar el perfil';
         this.loading = false;
-        console.error(err);
       },
     });
   }
