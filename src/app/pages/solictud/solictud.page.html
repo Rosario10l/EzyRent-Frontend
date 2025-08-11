@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-title class="font-bold text-gray-900">Gestión de Solicitudes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-gray-50">
+  <!-- Filtros estilo Airbnb -->
+  <div class="sticky top-0 z-10 bg-white shadow-sm px-4 py-3 border-b border-gray-200">
+    <div class="flex space-x-2 overflow-x-auto pb-2">
+      <ion-chip class="!rounded-full" [outline]="filtroActivo !== 'todas'">
+        <ion-label (click)="cambiarFiltro('todas')">Todas</ion-label>
+      </ion-chip>
+      <ion-chip class="!rounded-full" [outline]="filtroActivo !== 'pendientes'">
+        <ion-label (click)="cambiarFiltro('pendientes')">Pendientes</ion-label>
+      </ion-chip>
+      <ion-chip class="!rounded-full" [outline]="filtroActivo !== 'aprobadas'">
+        <ion-label (click)="cambiarFiltro('aprobadas')">Aprobadas</ion-label>
+      </ion-chip>
+      <ion-chip class="!rounded-full" [outline]="filtroActivo !== 'rechazadas'">
+        <ion-label (click)="cambiarFiltro('rechazadas')">Rechazadas</ion-label>
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Lista de solicitudes -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <ion-card *ngFor="let solicitud of solicitudesFiltradas" class="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-2">
+            <ion-avatar class="w-10 h-10">
+              <img [src]="'https://i.pravatar.cc/150?u=' + solicitud.usuarioId" alt="Usuario">
+            </ion-avatar>
+            <div>
+              <p class="font-semibold text-gray-900">Usuario #{{solicitud.usuarioId}}</p>
+              <p class="text-xs text-gray-500">{{solicitud.createdAt | date: 'mediumDate'}}</p>
+            </div>
+          </div>
+
+          <span class="px-3 py-1 rounded-full text-xs font-medium"
+            [ngClass]="{
+              'bg-yellow-100 text-yellow-800': solicitud.estado === 'pendiente',
+              'bg-green-100 text-green-800': solicitud.estado === 'aprobado',
+              'bg-red-100 text-red-800': solicitud.estado === 'rechazado'
+            }">
+            {{ solicitud.estado | titlecase }}
+          </span>
+        </div>
+
+        <div class="space-y-2 text-sm text-gray-700">
+          <div class="flex items-center">
+            <ion-icon name="calendar-outline" class="text-gray-400 mr-2"></ion-icon>
+            <span>{{solicitud.createdAt | date: 'short'}}</span>
+          </div>
+          <div class="flex items-center">
+            <ion-icon name="document-text-outline" class="text-gray-400 mr-2"></ion-icon>
+            <span>Tipo: {{solicitud.tipo || 'General'}}</span>
+          </div>
+        </div>
+
+        <div *ngIf="solicitud.estado === 'pendiente'" class="mt-4 flex space-x-2">
+          <ion-button expand="block" fill="outline" color="success" class="!rounded-lg !text-sm !font-medium"
+            (click)="confirmarAccion(solicitud.id, 'aprobar')">
+            <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+            Aprobar
+          </ion-button>
+          <ion-button expand="block" fill="outline" color="danger" class="!rounded-lg !text-sm !font-medium"
+            (click)="confirmarAccion(solicitud.id, 'rechazar')">
+            <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+            Rechazar
+          </ion-button>
+        </div>
+
+        <ion-button *ngIf="solicitud.estado !== 'pendiente'" expand="block" fill="clear" size="small" class="!text-sm mt-3">
+          Ver detalles
+          <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card>
+  </div>
+
+  <!-- Mensaje cuando no hay solicitudes -->
+  <div *ngIf="solicitudesFiltradas.length === 0" class="flex flex-col items-center justify-center h-64 text-center px-4">
+    <ion-icon name="file-tray-outline" class="text-4xl text-gray-300 mb-3"></ion-icon>
+    <h3 class="font-medium text-gray-700">No hay solicitudes</h3>
+    <p class="text-gray-500 text-sm mt-1">No se encontraron solicitudes con los filtros actuales</p>
+  </div>
+</ion-content>

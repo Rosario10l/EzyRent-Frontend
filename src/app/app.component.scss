@@ -1,0 +1,203 @@
+.custom-menu {
+  --width: 280px;
+  --border: none;
+
+  ion-content {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ion-color-light-shade);
+  }
+
+  ion-item {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --inner-padding-end: 12px;
+    --border-radius: 8px;
+    --min-height: 48px;
+
+    ion-icon {
+      font-size: 20px;
+      margin-right: 12px;
+    }
+
+    ion-label {
+      margin-left: 8px;
+    }
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+}
+
+ion-menu-button {
+  --color: var(--ion-color-dark);
+}
+
+.dark {
+  .custom-menu {
+    ion-content {
+      --background: var(--ion-color-dark);
+    }
+
+    ion-item {
+      --background: var(--ion-color-dark-shade);
+      --color: var(--ion-color-light);
+
+      ion-icon {
+        color: var(--ion-color-light);
+      }
+    }
+  }
+}
+/* Estilos para el menú */
+.custom-menu {
+  --width: 280px;
+
+  ion-content {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu-header {
+    position: relative;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ion-color-light-shade);
+
+    ion-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+
+  ion-item {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --border-radius: 8px;
+    --min-height: 48px;
+
+    ion-icon {
+      margin-right: 12px;
+    }
+  }
+}
+
+/* Estilos para la navbar */
+ion-header {
+  --background: white;
+
+  ion-toolbar {
+    --background: transparent;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --min-height: 64px;
+  }
+
+  ion-title {
+    padding: 0;
+    font-size: 1.125rem;
+  }
+
+  ion-menu-button {
+    --color: var(--ion-color-dark);
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+
+  ion-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+
+  ion-avatar {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  ion-header {
+    ion-title {
+      max-width: 200px;
+    }
+
+    .logo-text {
+      display: none;
+    }
+  }
+}
+/* Estilos para el panel de notificaciones */
+.notification-panel {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+
+  .notification-item {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    &.unread {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+  }
+}
+
+/* Indicador de notificaciones no leídas */
+.notification-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ef4444;
+}
+
+/* Mejoras para el avatar de usuario */
+.user-avatar {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+.notification-popover {
+  --width: 400px;
+  --max-width: 400vw;
+}
+
+.notification-item {
+  --min-height: 72px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+
+  ion-label {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+}
