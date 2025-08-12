@@ -1,18 +1,52 @@
-ion-img {
-  max-height: 300px;
-  object-fit: cover;
-  margin-bottom: 1rem;
+.detalle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.imagen-container ion-img {
+  width: 100%;
+  max-height: 350px;
+  object-fit: contain;
   border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.info-container ion-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .precio {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #222;
+  color: var(--ion-color-primary);
 }
 
 .descripcion {
-  margin-top: 1rem;
   font-size: 1rem;
-  line-height: 1.4;
+  margin-top: 10px;
+}
+
+/* Tablets y escritorios */
+@media (min-width: 768px) {
+  .detalle-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .imagen-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .imagen-container ion-img {
+    max-height: 500px;
+  }
+
+  .info-container {
+    flex: 1;
+  }
 }

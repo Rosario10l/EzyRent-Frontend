@@ -3,45 +3,56 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Detalle del Producto</ion-title>
+    <ion-title>Detalle del producto</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ng-container *ngIf="producto">
-    <ion-img [src]="producto.imagen_url" alt="{{ producto.nombre }}"></ion-img>
+  @if (producto) {
+    <div class="detalle-container">
+      <!-- Imagen -->
+      <div class="imagen-container">
+        <ion-img
+          [src]="producto.imagen_url"
+          alt="{{ producto.nombre }}">
+        </ion-img>
+      </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-subtitle>Producto para Renta</ion-card-subtitle>
-        <ion-card-title>{{ producto.nombre }}</ion-card-title>
-      </ion-card-header>
+      <!-- Información -->
+      <div class="info-container">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Producto para Renta</ion-card-subtitle>
+            <ion-card-title>{{ producto.nombre }}</ion-card-title>
+          </ion-card-header>
 
-      <ion-card-content>
-        <ion-item lines="none">
-          <ion-label>
-            <h2>Precio por día</h2>
-            <p class="precio">${{ producto.precio }}</p>
-          </ion-label>
-          <ion-badge color="success">
-            Disponible: {{ producto.cantidad_disponible }}/{{ producto.cantidad_total }}
-          </ion-badge>
-        </ion-item>
+          <ion-card-content>
+            <ion-item lines="none">
+              <ion-label>
+                <h2>Precio por día</h2>
+                <p class="precio">${{ producto.precio }}</p>
+              </ion-label>
+              <ion-badge color="success">
+                Disponible: {{ producto.cantidad_disponible }}/{{ producto.cantidad_total }}
+              </ion-badge>
+            </ion-item>
 
-        <ion-text color="medium">
-          <p class="descripcion">{{ producto.descripcion }}</p>
-        </ion-text>
+            <ion-text color="medium">
+              <p class="descripcion">{{ producto.descripcion }}</p>
+            </ion-text>
 
-        <ion-text color="medium">
-          <small>Publicado el: {{ producto.fecha_publicacion | date:'longDate' }}</small>
-        </ion-text>
-      </ion-card-content>
-    </ion-card>
-  </ng-container>
+            <ion-text color="medium">
+              <small>Publicado el: {{ producto.fecha_publicacion | date:'longDate' }}</small>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  }
 </ion-content>
 
 <ion-footer class="ion-padding">
   <ion-button expand="block" color="primary" size="large">
-    Rentar
+    Alquilar
   </ion-button>
 </ion-footer>
