@@ -22,11 +22,17 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/solictud/solictud.page').then( m => m.SolictudPage),
     canActivate: [AuthGuard,AdminGuard],
   },
+    {
+    path: 'solicitud-rentador',
+    loadComponent: () => import('./pages/solicitud-rentador/solicitud-rentador.page').then( m => m.SolicitudRentadorPage)
+  },
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
   },
+
+
 
 
 ];

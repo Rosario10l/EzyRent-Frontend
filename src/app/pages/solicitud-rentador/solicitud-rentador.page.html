@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Solicitud para ser Rentador</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="enviarSolicitud()">
+
+    <!-- Dirección -->
+    <ion-item>
+      <ion-label position="floating">Dirección</ion-label>
+      <ion-input formControlName="direccion" type="text"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="form.get('direccion')?.touched && form.get('direccion')?.invalid">
+      {{ form.get('direccion')?.errors?.['required'] ? 'La dirección es requerida' : 'Mínimo 10 caracteres' }}
+    </ion-note>
+
+    <!-- Teléfono -->
+    <ion-item>
+      <ion-label position="floating">Teléfono</ion-label>
+      <ion-input formControlName="telefono" type="tel"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="form.get('telefono')?.touched && form.get('telefono')?.invalid">
+      {{ form.get('telefono')?.errors?.['required'] ? 'El teléfono es requerido' : 'Debe tener 10 dígitos numéricos' }}
+    </ion-note>
+
+    <!-- URL de Identificación -->
+    <ion-item>
+      <ion-label position="floating">URL de Identificación</ion-label>
+      <ion-input formControlName="identificacion_url" type="text"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="form.get('identificacion_url')?.touched && form.get('identificacion_url')?.invalid">
+      Ingrese una URL válida donde esté alojada su identificación
+    </ion-note>
+
+    <ion-button expand="block" type="submit" [disabled]="form.invalid">
+      Enviar Solicitud
+    </ion-button>
+
+  </form>
+</ion-content>

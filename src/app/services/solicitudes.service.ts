@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
@@ -20,7 +20,21 @@ export class SolicitudesService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   crearSolicitud(data: any) {
-    return this.http.post(`${this.apiUrl}solicitud-rentador`, data);
+    const token = this.authService.getToken();
+    const user = this.authService.getCurrentUser();
+    if (!token || !user) {
+      throw new Error('No se ha encontrado un token de autenticación');
+    }
+    const payload = {
+      ...data,
+      usuarioId: user.id
+    };
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  );
+    return this.http.post(`${this.apiUrl}solicitud-rentador`, payload, { headers });
   }
 
   obtenerTodas() {
@@ -29,7 +43,11 @@ export class SolicitudesService {
     );
   }
   aprobarSolitud(id: number) {
-    return this.http.patch(`${this.apiUrl}solicitud-rentador/${id}/aprobar`, {});
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+    return this.http.patch(`${this.apiUrl}solicitud-rentador/${id}/aprobar`, {}, { headers });
   }
   rechazarSolicitud(id: number) {
     return this.http.patch(`${this.apiUrl}solicitud-rentador/${id}/rechazar`, {});
@@ -37,5 +55,4 @@ export class SolicitudesService {
   tieneSolicitudPendiente(usuarioId: string) {
     return this.http.get<boolean>(`${this.apiUrl}solicitud-rentador/pendiente/${usuarioId}`);
   }
-
 }
