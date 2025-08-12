@@ -5,7 +5,9 @@ import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
 
- export interface User {
+
+
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -95,8 +97,9 @@ register(userData: any) {
   }
 
   isAdmin(): boolean {
-  const user = this.getCurrentUser();
-  return user !== null && user.rol === 'admin';
-}
-
+    return this.getCurrentUser()?.rol === 'admin';
+  }
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 }
