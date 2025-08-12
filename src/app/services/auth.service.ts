@@ -29,38 +29,51 @@ export class AuthService {
     }
   }
 
-  login(credentials: { email: string; password: string }) {
-    console.log('URL:', `${this.apiUrl}usuario/login`);
-    return this.http.post(`${this.apiUrl}usuario/login`, credentials).pipe(
-      tap((response: any) => {
-        if (response.access_token) {
-          localStorage.setItem('token', response.access_token);
-          this.isAuthenticated.next(true);
+ login(credentials: { email: string; password: string }) {
+  return this.http.post(`${this.apiUrl}usuario/login`, credentials).pipe(
+    tap((response: any) => {
+      if (response.access_token) {
+        localStorage.setItem('token', response.access_token);
+        this.isAuthenticated.next(true);
 
-          if (response.user) {
-            localStorage.setItem('user', JSON.stringify(response.user));
-            this.currentUserSubject.next(response.user);
-          }
+        if (response.user) {
+          // Transformar user para que tenga 'name' y 'rol'
+          const userToStore = {
+            id: response.user.id,
+            name: response.user.nombre,   // cambiar 'nombre' a 'name'
+            email: response.user.email,
+            rol: response.user.rol        // asegurar que el rol venga y se guarde
+          };
+          localStorage.setItem('user', JSON.stringify(userToStore));
+          this.currentUserSubject.next(userToStore);
         }
-      })
-    );
-  }
+      }
+    })
+  );
+}
 
-  register(userData: any) {
-    return this.http.post(`${this.apiUrl}usuario/register`, userData).pipe(
-      tap((response: any) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          this.isAuthenticated.next(true);
+register(userData: any) {
+  return this.http.post(`${this.apiUrl}usuario/register`, userData).pipe(
+    tap((response: any) => {
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        this.isAuthenticated.next(true);
 
-          if (response.user) {
-            localStorage.setItem('user', JSON.stringify(response.user));
-            this.currentUserSubject.next(response.user);
-          }
+        if (response.user) {
+          const userToStore = {
+            id: response.user.id,
+            name: response.user.nombre,
+            email: response.user.email,
+            rol: response.user.rol
+          };
+          localStorage.setItem('user', JSON.stringify(userToStore));
+          this.currentUserSubject.next(userToStore);
         }
-      })
-    );
-  }
+      }
+    })
+  );
+}
+
 
   logout() {
     localStorage.removeItem('token');
@@ -82,6 +95,8 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.getCurrentUser()?.rol === 'admin';
-  }
+  const user = this.getCurrentUser();
+  return user !== null && user.rol === 'admin';
+}
+
 }
