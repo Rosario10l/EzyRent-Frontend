@@ -1,32 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-
-export interface Renta {
-  articuloId: number;
-  usuarioId: number;
-  cantidad: number;
+export interface CreateRentaDto {
   fecha_inicio: string;
   fecha_fin: string;
+  camtidad: number;
+  estado?: string;
+  articuloId: number;
+  usuarioId?: number; // Lo enviaremos desde el front
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class RentaService {
+  private apiUrl = 'http://localhost:3000/rentas'; // Ajusta según tu backend
 
+  constructor(private http: HttpClient) {}
 
-  private apiUrl = 'http://localhost:3000/rentas';
-
-  constructor(private http: HttpClient) { }
-  crearRenta(renta: Renta): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-
-    return this.http.post(this.apiUrl, renta, httpOptions);
+  crearRenta(renta: CreateRentaDto): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, renta);
   }
 }

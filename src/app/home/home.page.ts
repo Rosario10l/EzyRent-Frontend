@@ -4,16 +4,20 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { ProductService, Articulo } from '../services/products.service';
 import { AuthService, User } from '../services/auth.service';
-import { RentaService, Renta } from '../services/renta.service';
+import { RentaService,  } from '../services/renta.service';
 import { FormsModule } from '@angular/forms';
-import { take } from 'rxjs/operators'; 
+import { take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { UsuariosService } from '../services/usuarios.service';
+import { Usuario } from '../services/usuarios.service'; // Ajusta la ruta si es diferente
+
 
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule, DatePipe, FormsModule ], 
+  imports: [CommonModule, IonicModule, RouterModule, FormsModule ],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   providers: [DatePipe]
@@ -40,6 +44,7 @@ export class HomePage implements OnInit {
     private toastController: ToastController,
     private rentaService: RentaService,
     private authService: AuthService,
+    private usuariosService: UsuariosService,
   ) {
         this.today = new Date().toISOString();
 
@@ -51,20 +56,28 @@ export class HomePage implements OnInit {
     this.authService.currentUser$.pipe(take(1)).subscribe(user => {
         this.selectedUsuario = user;
     });
+
+    // Después de obtener productos (por ejemplo, en ngOnInit o después de la llamada http)
+
+this.extraerCategorias();
+this.verCategoria('todos'); // para que muestre todo al inicio
+
   }
 
   async cargarProductos() {
     try {
       this.isLoading = true;
       this.error = null;
+this.productservice.getArticulos().subscribe({
+  next: (products) => {
+    this.products = products.filter(p => p.activo);
+    console.log('Productos cargados:', this.products); // <-- revisa aquí
+    this.productsFiltrados = this.products;
+    this.extraerCategorias();
+    console.log('Categorías extraídas:', this.categoria); // <-- revisa aquí
+    this.isLoading = false;
+  },
 
-      this.productservice.getArticulos().subscribe({
-        next: (products) => {
-          this.products = products.filter(p => p.activo);
-          this.productsFiltrados = this.products;
-          this.extraerCategorias();
-          this.isLoading = false;
-        },
         error: (error) => {
           console.error('Error al cargar productos:', error);
           this.error = 'Error al cargar los productos. Intenta de nuevo.';
@@ -111,7 +124,7 @@ export class HomePage implements OnInit {
       return;
     }
     this.selectedProduct = producto;
-    
+
     this.fecha_inicio = null;
     this.fecha_fin = null;
     this.cantidad = 1;
@@ -125,7 +138,7 @@ export class HomePage implements OnInit {
     this.fecha_inicio = null;
     this.fecha_fin = null;
   }
-  
+
   incrementarCantidad(): void {
     if (this.selectedProduct && this.cantidad < this.selectedProduct.cantidad_disponible) {
       this.cantidad++;
@@ -138,59 +151,9 @@ export class HomePage implements OnInit {
     }
   }
 
-  async confirmRental(): Promise<void> {
-    if (!this.selectedProduct || !this.fecha_inicio || !this.fecha_fin || this.cantidad <= 0) {
-      // El mensaje de error es más genérico para cubrir todos los campos faltantes
-      this.presentToast('Por favor, revisa que todos los campos de la renta estén completos.', 'warning');
-      return;
-    }
 
-  if (!this.selectedUsuario) {
-      this.presentToast('No se ha encontrado un usuario autenticado para la renta.', 'danger');
-      return;
-    }
-
-    // AÑADIDO: Validación del ID del usuario
-    const usuarioId = parseInt(this.selectedUsuario.id, 10);
-    if (isNaN(usuarioId)) {
-      this.presentToast('El ID del usuario no es válido.', 'danger');
-      return;
-    }
-
-    
-    const nuevaRenta: Renta = {
-      articuloId: this.selectedProduct.id,
-      usuarioId: usuarioId,
-      cantidad: this.cantidad,
-      fecha_inicio: this.fecha_inicio,
-      fecha_fin: this.fecha_fin
-    };
-
-    this.rentaService.crearRenta(nuevaRenta).subscribe({
-      next: (response) => {
-        console.log('Renta confirmada:', response);
-        this.presentToast('Renta confirmada exitosamente.', 'success');
-        this.closeRentalModal();
-      },
-      error: (error) => {
-        console.error('Error al crear la renta:', error);
-        this.presentToast('Error al confirmar la renta. Intenta de nuevo.', 'danger');
-      }
-    });
-  }
-  
-  async presentToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      position: 'middle',
-      color
-    });
-    toast.present();
-  }
-  
   verDetalleProducto(producto: Articulo) {
-    this.router.navigate(['/productos', producto.id]);
+    this.router.navigate(['/detalles', producto.id]);
   }
 
   onImageError(event: any) {
@@ -204,11 +167,31 @@ export class HomePage implements OnInit {
     }).format(precio);
   }
 
-  
 
-  agregarProducto() {
-    this.router.navigate(['/productos/nuevo']);
+
+  async agregarProducto() {
+  const userStr = localStorage.getItem('user');
+  if (!userStr) {
+    console.warn('No hay usuario logueado');
+    this.router.navigate(['/login']);
+    return;
   }
+  const userLogged = JSON.parse(userStr);
+  const usuarioId = userLogged.id;
+
+  try {
+    const usuario: Usuario = await firstValueFrom(this.usuariosService.getOne(usuarioId));
+    if (usuario.es_rentador === 1) {
+      this.router.navigate(['/new-product']);
+    } else {
+      this.router.navigate(['/convertirse-rentador']);
+    }
+  } catch (error) {
+    console.error('Error al obtener usuario:', error);
+    this.router.navigate(['/login']);
+  }
+}
+
 
   onDateChange(event: any) {
   const value = event.detail.value;
@@ -221,7 +204,7 @@ export class HomePage implements OnInit {
   }
 }
 
- 
+
   getAvailabilityText(quantity: number): string {
     return quantity > 0 ? 'Disponible' : 'Agotado';
   }

@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title style="color: #b91c1c; font-weight: 600;">
+      Detalle del producto
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (producto) {
+    <div class="detalle-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+      <!-- Imagen -->
+      <div class="imagen-container" style="text-align: center;">
+        <ion-img
+          [src]="producto.imagen_url"
+          alt="{{ producto.nombre }}"
+          style="max-width: 100%; border-radius: 16px; box-shadow: 0 4px 14px rgba(185,28,28,0.3);">
+        </ion-img>
+      </div>
+
+      <!-- Información -->
+      <div class="info-container">
+        <ion-card style="border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+          <ion-card-header>
+            <ion-card-subtitle style="color: #dc2626; font-weight: 600;">
+              Producto para Renta
+            </ion-card-subtitle>
+            <ion-card-title style="color: #b91c1c; font-weight: 700;">
+              {{ producto.nombre }}
+            </ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item lines="none">
+              <ion-label>
+                <h2 style="color: #7f1d1d; font-weight: 600;">Precio por día</h2>
+                <p class="precio" style="font-size: 1.2rem; font-weight: 700; color: #dc2626; margin: 0;">
+                  ${{ producto.precio }}
+                </p>
+              </ion-label>
+              <ion-badge style="background-color: #fef2f2; color: #b91c1c; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 8px;">
+                Disponible: {{ producto.cantidad_disponible }}/{{ producto.cantidad_total }}
+              </ion-badge>
+            </ion-item>
+
+            <ion-text color="medium">
+              <p class="descripcion" style="margin-top: 0.6rem; line-height: 1.4;">
+                {{ producto.descripcion }}
+              </p>
+            </ion-text>
+
+            <ion-text color="medium">
+              <small style="display: block; margin-top: 0.5rem; color: #7f1d1d;">
+                Publicado el: {{ producto.fecha_publicacion | date:'longDate' }}
+              </small>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  }
+</ion-content>
+
+<ion-footer class="ion-padding" style="background: white; border-top: 1px solid #eee; display: flex; flex-direction: column; gap: 0.75rem;">
+  <ion-button
+    expand="block"
+    style="--background: #dc2626; --background-hover: #b91c1c; --border-radius: 12px; font-weight: 700; font-size: 1.1rem;"
+    size="large"
+    (click)="irARentar(producto)">
+    Alquilar
+  </ion-button>
+
+  <ion-button
+    expand="block"
+    fill="outline"
+    style="--border-color: #dc2626; --color: #dc2626; --border-radius: 12px; font-weight: 600; font-size: 1rem;"
+    size="large"
+    (click)="agregarCalificacion(producto)">
+    Agregar Calificación
+  </ion-button>
+</ion-footer>

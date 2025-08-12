@@ -30,6 +30,7 @@ import {
   documentTextOutline,
   fileTrayOutline
 } from 'ionicons/icons';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-solictud',
@@ -49,7 +50,8 @@ import {
     IonIcon,
     IonButtons,
     CommonModule,
-    FormsModule
+    FormsModule,
+
   ]
 })
 export class SolictudPage implements OnInit {

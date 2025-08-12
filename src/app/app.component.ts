@@ -77,6 +77,7 @@ export class AppComponent implements OnInit {
     { title: 'Iniciar sesión', url: '/login', showWhen: 'loggedOut', icon: 'log-in-outline' },
     { title: 'Registrarse', url: '/register', showWhen: 'loggedOut', icon: 'person-add-outline' },
     { title: 'Solicitudes', url: '/solictud', showWhen: 'loggedIn', showOnlyFor: 'admin', icon: 'document-text-outline' },
+    { title: 'Solicitar ser rentador', url: '/solicitud-rentador', showWhen: 'loggedIn', showOnlyFor: 'admin', icon: 'document-text-outline' },
     { title: 'Cerrar sesión', url: '/login', showWhen: 'loggedIn', icon: 'log-out-outline', action: 'logout' },
   ];
 

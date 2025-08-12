@@ -1,0 +1,41 @@
+<div class="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-lg mt-16 space-y-6">
+
+  <h1 class="text-2xl font-bold mb-4 text-center text-red-600">Calificaciones</h1>
+
+  <form (ngSubmit)="agregarCalificacion()" class="space-y-5">
+
+    <div>
+      <label class="block font-semibold mb-1 text-gray-700">Calificación (1-5)</label>
+      <input
+        type="number"
+        [(ngModel)]="nuevaCalificacion.calificacion"
+        name="Calificacion"
+        min="1"
+        max="5"
+        required
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 placeholder-gray-400
+               focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-500 transition"
+      />
+    </div>
+
+    <div>
+      <label class="block font-semibold mb-1 text-gray-700">Comentario</label>
+      <textarea
+        [(ngModel)]="nuevaCalificacion.comentario"
+        name="comentario"
+        rows="3"
+        placeholder="Opcional"
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 placeholder-gray-400
+               focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-500 transition resize-none"
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-red-500 text-white font-semibold py-3 rounded-xl shadow hover:bg-red-600 transition"
+    >
+      Agregar Calificación
+    </button>
+
+  </form>
+</div>
