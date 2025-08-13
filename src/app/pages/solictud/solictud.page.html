@@ -30,7 +30,8 @@
 
   <!-- Lista de solicitudes -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-    <ion-card *ngFor="let solicitud of solicitudesFiltradas" class="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
+    <ion-card *ngFor="let solicitud of solicitudesFiltradas"
+      class="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
       <div class="p-4">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center space-x-2">
@@ -43,8 +44,7 @@
             </div>
           </div>
 
-          <span class="px-3 py-1 rounded-full text-xs font-medium"
-            [ngClass]="{
+          <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="{
               'bg-yellow-100 text-yellow-800': solicitud.estado === 'pendiente',
               'bg-green-100 text-green-800': solicitud.estado === 'aprobado',
               'bg-red-100 text-red-800': solicitud.estado === 'rechazado'
@@ -77,7 +77,8 @@
           </ion-button>
         </div>
 
-        <ion-button *ngIf="solicitud.estado !== 'pendiente'" expand="block" fill="clear" size="small" class="!text-sm mt-3">
+        <ion-button [routerLink]="['/solicitud-rentador-detalle', solicitud.id]" expand="block" fill="clear" size="small"
+          class="!text-sm mt-3">
           Ver detalles
           <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
         </ion-button>
@@ -85,8 +86,9 @@
     </ion-card>
   </div>
 
-  <!-- Mensaje cuando no hay solicitudes -->
-  <div *ngIf="solicitudesFiltradas.length === 0" class="flex flex-col items-center justify-center h-64 text-center px-4">
+
+  <div *ngIf="solicitudesFiltradas.length === 0"
+    class="flex flex-col items-center justify-center h-64 text-center px-4">
     <ion-icon name="file-tray-outline" class="text-4xl text-gray-300 mb-3"></ion-icon>
     <h3 class="font-medium text-gray-700">No hay solicitudes</h3>
     <p class="text-gray-500 text-sm mt-1">No se encontraron solicitudes con los filtros actuales</p>

@@ -3,7 +3,8 @@ import {
   IonApp, IonRouterOutlet, IonList, IonContent, IonLabel,
   IonItem, IonMenu, IonMenuButton, IonButtons, IonButton,
   IonIcon, IonBadge, IonHeader, IonToolbar, IonTitle,
-  IonAvatar, IonToggle, IonImg, IonPopover, IonListHeader } from '@ionic/angular/standalone';
+  IonAvatar, IonToggle, IonImg, IonPopover, IonListHeader
+} from '@ionic/angular/standalone';
 import { AuthService } from './services/auth.service';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -76,8 +77,8 @@ export class AppComponent implements OnInit {
     { title: 'Inicio', url: '/home', showWhen: 'loggedIn', icon: 'home-outline' },
     { title: 'Iniciar sesión', url: '/login', showWhen: 'loggedOut', icon: 'log-in-outline' },
     { title: 'Registrarse', url: '/register', showWhen: 'loggedOut', icon: 'person-add-outline' },
-    { title: 'Solicitudes', url: '/solictud', showWhen: 'loggedIn', showOnlyFor: 'admin', icon: 'document-text-outline' },
-    { title: 'Solicitar ser rentador', url: '/solicitud-rentador', showWhen: 'loggedIn', showOnlyFor: 'admin', icon: 'document-text-outline' },
+   { title: 'Solicitudes', url: '/solictud', showWhen: 'loggedIn', showOnlyFor: 'admin', icon: 'document-text-outline' },
+    { title: 'Solicitar ser rentador', url: '/solicitud-rentador', showWhen: 'loggedIn', showOnlyFor: 'usuario', icon: 'document-text-outline' },
     { title: 'Cerrar sesión', url: '/login', showWhen: 'loggedIn', icon: 'log-out-outline', action: 'logout' },
   ];
 
@@ -91,7 +92,7 @@ export class AppComponent implements OnInit {
     private solicitudesService: SolicitudesService,
     private router: Router,
     private titleService: Title,
-     private popoverCtrl: PopoverController
+    private popoverCtrl: PopoverController
   ) {
     addIcons({ menuOutline, notificationsOutline, homeOutline, logInOutline, personAddOutline, documentTextOutline, logOutOutline, sunnyOutline, moonOutline, settingsOutline });
   }
@@ -147,10 +148,18 @@ export class AppComponent implements OnInit {
   }
 
   shouldShow(item: any): boolean {
-    return (item.showWhen === 'loggedIn' && this.authService.isLoggedIn()) ||
-      (item.showWhen === 'loggedOut' && !this.authService.isLoggedIn());
-  }
+    const isLoggedIn = this.authService.isLoggedIn();
+    const currentUser = this.authService.getCurrentUser();
 
+    // Validar si debe mostrarse por login/logout
+    if (item.showWhen === 'loggedIn' && !isLoggedIn) return false;
+    if (item.showWhen === 'loggedOut' && isLoggedIn) return false;
+
+    // Validar rol si existe restricción
+    if (item.showOnlyFor && currentUser?.rol !== item.showOnlyFor) return false;
+
+    return true;
+  }
   getIconForItem(item: any): string {
     return item.icon || 'help-outline';
   }
@@ -171,7 +180,7 @@ export class AppComponent implements OnInit {
     document.body.classList.toggle('dark', this.isDarkMode);
   }
 
-   async presentNotifications(ev?: Event) {
+  async presentNotifications(ev?: Event) {
     this.isNotificationsOpen = true;
 
     // Actualiza las notificaciones no leídas
