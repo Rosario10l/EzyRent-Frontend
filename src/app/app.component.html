@@ -39,15 +39,7 @@
         }
         }
       </ion-list>
-      <div class="mt-auto pt-4 border-t border-gray-200">
-        <ion-item button (click)="toggleDarkMode()" class="rounded-lg">
-          <ion-icon [name]="isDarkMode ? 'moon' : 'sunny'" slot="start" class="text-gray-600"></ion-icon>
-          <ion-label class="font-medium text-gray-700">
-            {{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}
-          </ion-label>
-          <ion-toggle slot="end" [checked]="isDarkMode" (ionChange)="toggleDarkMode()"></ion-toggle>
-        </ion-item>
-      </div>
+
     </ion-content>
   </ion-menu>
 
@@ -62,10 +54,7 @@
               </ion-menu-button>
             </ion-buttons>
 
-            <div class="flex items-center">
-              <ion-img src="assets/logo.svg" class="h-8 w-auto" alt="Logo"></ion-img>
-              <span class="ml-2 text-lg font-bold text-gray-900 hidden md:block">EzyRent</span>
-            </div>
+
           </div>
 
           <div class="flex-1 text-center px-4">

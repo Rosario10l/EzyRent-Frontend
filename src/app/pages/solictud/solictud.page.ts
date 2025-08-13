@@ -51,6 +51,7 @@ import { RouterLink } from '@angular/router';
     IonButtons,
     CommonModule,
     FormsModule,
+    RouterLink
 
   ]
 })

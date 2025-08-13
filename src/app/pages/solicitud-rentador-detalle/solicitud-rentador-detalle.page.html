@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalles de Solicitud</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!isLoading" class="ion-padding">
+  <ion-card *ngIf="solicitud">
+    <ion-card-header>
+      <ion-card-title>Solicitud #{{solicitud.id}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-label>Usuario ID: {{solicitud.usuarioId}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        <ion-label>Teléfono: {{solicitud.telefono || 'No disponible'}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="home-outline" slot="start"></ion-icon>
+        <ion-label>Dirección: {{solicitud.direccion || 'No disponible'}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="document-text-outline" slot="start"></ion-icon>
+        <ion-label>Estado: {{solicitud.estado | titlecase}}</ion-label>
+      </ion-item>
+
+      <div class="mt-4">
+        <p><strong>Fecha:</strong> {{solicitud.createdAt | date:'medium'}}</p>
+        <p><strong>Identificación:</strong></p>
+        <img *ngIf="solicitud.identificacion_url"
+             [src]="solicitud.identificacion_url"
+             alt="Identificación"
+             class="w-full rounded-lg border border-gray-300 mt-2">
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngIf="!solicitud" class="text-center mt-10">
+    <p>No se encontró la solicitud</p>
+  </div>
+</ion-content>
