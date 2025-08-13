@@ -104,7 +104,7 @@ this.productservice.getArticulos().subscribe({
   verCategoria(categoria: string) {
     this.selectedCategory = categoria;
     if (categoria === 'todos') {
-      this.productsFiltrados = this.products;
+      this.productsFiltrados = this.products; 
     } else {
       this.productsFiltrados = this.products.filter(
         products => products.categoria?.nombre.toLowerCase() === categoria.toLowerCase()

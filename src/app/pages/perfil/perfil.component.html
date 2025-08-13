@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding perfil-content" fullscreen>
+  <div class="min-h-[calc(100vh-56px)] flex items-center justify-center p-4">
+
+    @if (!loading && !error && usuario) {
+      <ion-card class="w-full max-w-[480px] bg-white rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden">
+
+        <!-- Encabezado -->
+        <ion-card-header class="ion-text-center px-8 pt-8">
+          <h1 class="text-2xl font-bold text-gray-900">Mi perfil</h1>
+          <p class="text-sm text-gray-500 mt-1">Comienza a alquilar</p>
+
+          <!-- Avatar: toma el link o usa fallback -->
+          <div class="flex justify-center mt-6">
+            <ion-avatar class="ion-margin shadow-md ring-4 ring-white rounded-full">
+              <img
+                [src]="usuario?.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"
+                alt="Avatar"
+                class="object-cover"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"
+              />
+            </ion-avatar>
+          </div>
+
+          <!-- Nombre y email -->
+          <ion-card-title class="mt-2 text-lg font-semibold text-gray-900">
+            {{ usuario.nombre }}
+          </ion-card-title>
+          <ion-card-subtitle class="text-sm text-gray-500">
+            {{ usuario.email }}
+          </ion-card-subtitle>
+        </ion-card-header>
+
+        <!-- Contenido -->
+        <ion-card-content class="px-8 pb-8">
+          <!-- Rol -->
+          <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+          <div class="h-11 w-full border border-gray-200 rounded-lg px-3 flex items-center text-gray-800">
+            {{ usuario.rol }}
+          </div>
+
+          <!-- Rentador -->
+          <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Rentador</label>
+          <div class="h-11 w-full border border-gray-200 rounded-lg px-3 flex items-center text-gray-800">
+            {{ usuario.es_rentador ? 'Sí' : 'No' }}
+          </div>
+
+          <!-- Fecha -->
+          <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Fecha de creación</label>
+          <div class="h-11 w-full border border-gray-200 rounded-lg px-3 flex items-center text-gray-800">
+            {{ usuario.fecha_creacion | date:'medium' }}
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    } @else if (loading) {
+      <!-- Estado de carga -->
+      <div class="w-full max-w-[420px] text-center">
+        <div class="bg-white rounded-2xl shadow p-8">
+          <ion-spinner name="crescent"></ion-spinner>
+          <div class="mt-3 text-sm text-gray-500">Cargando perfil...</div>
+        </div>
+      </div>
+    } @else {
+      <!-- Estado de error -->
+      <div class="w-full max-w-[420px] text-center">
+        <div class="bg-white rounded-2xl shadow p-8">
+          <p class="text-sm font-medium text-red-600">
+            {{ error || 'No se pudo cargar el perfil.' }}
+          </p>
+        </div>
+      </div>
+    }
+
+  </div>
+</ion-content>
