@@ -39,7 +39,7 @@ export class RentaComponent {
     this.rentaForm = this.fb.group({
       fecha_inicio: ['', Validators.required],
       fecha_fin: ['', Validators.required],
-      camtidad: [1, [Validators.required, Validators.min(1)]]
+      cantidad: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -54,7 +54,7 @@ onSubmit(): void {
   const nuevaRenta = {
     fecha_inicio: formValue.fecha_inicio,
     fecha_fin: formValue.fecha_fin,
-    camtidad: formValue.camtidad,  // cuidado con el nombre en el DTO backend
+    cantidad: formValue.cantidad,  // cuidado con el nombre en el DTO backend
     articuloId: this.articuloId,
     usuarioId: this.usuarioId
   };

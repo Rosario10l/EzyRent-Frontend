@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface CreateRentaDto {
   fecha_inicio: string;
   fecha_fin: string;
-  camtidad: number;
+  cantidad: number;
   estado?: string;
   articuloId: number;
   usuarioId?: number; // Lo enviaremos desde el front
