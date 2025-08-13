@@ -31,6 +31,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'calendario',
+    loadComponent: () => import('./pages/calendar-productos/calendar-productos.page').then((m) => m.CalendarProductosPage),
+    
+  },
+  {
     path: 'convertirse-rentador',
     loadComponent: () => import('./crear-solicitud/crear-solicitud.component').then((m) => m.CrearSolicitudComponent),
 
@@ -67,4 +72,9 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full',
   },
+  {
+    path: 'calendar-productos',
+    loadComponent: () => import('./pages/calendar-productos/calendar-productos.page').then( m => m.CalendarProductosPage)
+  },
+
 ];

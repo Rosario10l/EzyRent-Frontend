@@ -35,11 +35,11 @@ interface Notification {
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [IonListHeader, IonPopover, IonImg,
+  imports: [IonListHeader, IonPopover,
     IonItem, IonApp, IonMenu, RouterLink, IonRouterOutlet,
     IonList, IonContent, IonLabel, IonMenuButton, IonButtons,
     IonButton, IonIcon, IonBadge, IonHeader, IonToolbar,
-    IonTitle, IonAvatar, IonToggle, CommonModule, AsyncPipe, IonPopover, IonListHeader
+    IonTitle, IonAvatar, CommonModule, AsyncPipe, IonPopover, IonListHeader
   ]
 })
 export class AppComponent implements OnInit {
